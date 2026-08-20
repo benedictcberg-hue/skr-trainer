@@ -36,9 +36,9 @@
   .betrag{font-family:var(--mono);background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:2px 10px;color:#ffd479}
   .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   @media(max-width:560px){.opts{grid-template-columns:1fr}}
-  .opt{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;text-align:left;color:var(--txt);font-size:.95rem;transition:.12s;display:flex;gap:10px;align-items:baseline}
+  .opt{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;text-align:left;color:var(--txt);font-size:.95rem;transition:.12s;display:flex;gap:10px;align-items:baseline;justify-content:center}
   .opt:hover{border-color:var(--accent);transform:translateY(-1px)}
-  .opt .nr{font-family:var(--mono);color:var(--accent);font-weight:700}
+  .opt .nr{font-family:var(--mono);color:var(--accent);font-weight:700;font-size:1.05rem}
   .opt.correct{border-color:var(--ok);background:var(--okbg)}
   .opt.wrong{border-color:var(--err);background:var(--errbg)}
   .opt:disabled{cursor:default;opacity:.85}
@@ -49,6 +49,8 @@
   select{background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:11px 12px;font-size:.9rem;font-family:var(--mono);width:100%}
   select:focus{outline:none;border-color:var(--accent)}
   .an{font-family:var(--mono);color:var(--dim);padding-bottom:12px;font-weight:700}
+  .hard{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--dim);margin:4px 0 14px;cursor:pointer;user-select:none}
+  .hard input{accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
   /* Feedback */
   .fb{margin-top:16px;border-radius:10px;padding:14px 16px;font-size:.9rem;display:none}
   .fb.show{display:block}
@@ -182,7 +184,7 @@
       <h3>So lernst du mit diesem Trainer</h3>
       <div class="path">
         <div class="step"><p><b>Konto finden:</b> Erst die Nummern pauken – SKR03 und SKR04 getrennt, bis du ~80 % sicher hast.</p></div>
-        <div class="step"><p><b>Buchungssatz:</b> Dann die 12 Geschäftsfälle durcharbeiten. Lies die Erklärung unter jeder Lösung – dort steckt das eigentliche Lernen.</p></div>
+        <div class="step"><p><b>Buchungssatz:</b> Dann die 12 Geschäftsfälle durcharbeiten. Lies die Erklärung unter jeder Lösung – dort steckt das eigentliche Lernen. Aktiviere „Nur Kontonummern", sobald du die Namen-Nr.-Zuordnung testen willst.</p></div>
         <div class="step"><p><b>SKR03 ⇄ SKR04:</b> Zum Schluss das Umschlüsseln. Wichtig, wenn deine Software und die Kanzlei unterschiedliche Rahmen nutzen.</p></div>
       </div>
 
@@ -290,7 +292,6 @@ const $ = id => document.getElementById(id);
 const rnd = a => a[Math.floor(Math.random() * a.length)];
 const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(p => p[1]);
 const kto = k => k[fw];
-const fmt = k => kto(k) + " · " + k.name;
 
 function score(win) {
   all++;
@@ -301,19 +302,25 @@ function score(win) {
   $("scStreak").textContent = streak;
 }
 
-/* ---------- Modus 1: Konto finden ---------- */
+/* Distraktoren: bevorzugt gleiche Anfangsziffer (gleiche Kontenklasse) */
+function distraktoren(k, n) {
+  const same = KONTEN.filter(x => x !== k && kto(x)[0] === kto(k)[0]);
+  const rest = KONTEN.filter(x => x !== k && kto(x)[0] !== kto(k)[0]);
+  return [...shuffle(same), ...shuffle(rest)].slice(0, n);
+}
+
+/* ---------- Modus 1: Konto finden (nur Nummern als Optionen!) ---------- */
 function qKonto() {
   answered = false;
   const k = rnd(KONTEN);
-  const others = shuffle(KONTEN.filter(x => x !== k)).slice(0, 3);
-  const opts = shuffle([k, ...others]);
+  const opts = shuffle([k, ...distraktoren(k, 3)]);
   cur = k;
   card.innerHTML = `
     <div class="qmeta">${fw === "s03" ? "SKR03" : "SKR04"} · Konto finden</div>
     <div class="qtext">Welche Kontonummer hat „${k.name}"?</div>
-    <div class="qsub">Kontenart: ${k.art}konto</div>
+    <div class="qsub">Kontenart: ${k.art}konto · Die Namen helfen dir diesmal nicht – nur die Nummer zählt 😉</div>
     <div class="opts">${opts.map(o =>
-      `<button class="opt" data-nr="${kto(o)}"><span class="nr">${kto(o)}</span><span>${o.name}</span></button>`).join("")}
+      `<button class="opt" data-nr="${kto(o)}"><span class="nr">${kto(o)}</span></button>`).join("")}
     </div>
     <div class="fb" id="fb"></div>
     <div class="actions"><button class="btn ghost" id="next" style="display:none">Nächste Frage →</button></div>`;
@@ -338,21 +345,32 @@ function qSatz() {
   const s = rnd(SAETZE);
   cur = s;
   const list = [...KONTEN].sort((a, b) => kto(a).localeCompare(kto(b)));
-  const opts = list.map(k => `<option value="${k.name}">${fmt(k)}</option>`).join("");
+  const buildOpts = hard => list.map(k =>
+    `<option value="${k.name}">${hard ? kto(k) : kto(k) + " · " + k.name}</option>`).join("");
   card.innerHTML = `
     <div class="qmeta">${fw === "s03" ? "SKR03" : "SKR04"} · Buchungssatz bilden</div>
     <div class="qtext">${s.t}</div>
     <div class="qsub">Betrag: <span class="betrag">${s.betrag}</span> · Bilde den Buchungssatz (Soll an Haben):</div>
+    <label class="hard"><input type="checkbox" id="hardMode"> Schwer: nur Kontonummern anzeigen</label>
     <div class="satzrow">
-      <div class="field"><label>Soll (Konto)</label><select id="selSoll"><option value="">– wählen –</option>${opts}</select></div>
+      <div class="field"><label>Soll (Konto)</label><select id="selSoll"></select></div>
       <div class="an">an</div>
-      <div class="field"><label>Haben (Konto)</label><select id="selHaben"><option value="">– wählen –</option>${opts}</select></div>
+      <div class="field"><label>Haben (Konto)</label><select id="selHaben"></select></div>
     </div>
     <div class="fb" id="fb"></div>
     <div class="actions">
       <button class="btn" id="check">Prüfen</button>
       <button class="btn ghost" id="next" style="display:none">Nächster Fall →</button>
     </div>`;
+  const fill = hard => {
+    const so = $("selSoll").value, ha = $("selHaben").value;
+    const opts = `<option value="">– wählen –</option>` + buildOpts(hard);
+    $("selSoll").innerHTML = opts;
+    $("selHaben").innerHTML = opts;
+    $("selSoll").value = so; $("selHaben").value = ha;
+  };
+  fill(false);
+  $("hardMode").onchange = e => fill(e.target.checked);
   $("check").onclick = () => {
     if (answered) return;
     const so = $("selSoll").value, ha = $("selHaben").value;
