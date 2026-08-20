@@ -5,896 +5,111 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SKR03 / SKR04 Kontierungstrainer</title>
 <style>
-  :root{
-    /* DATEV-Markenfarben: Hellgrün RGB 144/208/51, Dunkelgrün RGB 3/154/154, Petrol #00595C, Anthrazit #1D1D1B */
-    --bg:#f4f6f0; --card:#ffffff; --card2:#eef2e7; --line:#dbe3d2;
-    --txt:#1d1d1b; --dim:#5f6a61;
-    --accent:#90d033; --accent-d:#77ab24; --petrol:#00595c; --teal:#039a9a;
-    --ok:#2f9e44; --okbg:rgba(144,208,51,.14); --err:#d64541; --errbg:rgba(214,69,65,.08);
-    --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;min-height:100vh;padding:0 0 80px}
-  .topbar{background:var(--accent);color:var(--txt);padding:14px 16px;border-bottom:4px solid var(--petrol)}
-  .topbar .inner{max-width:860px;margin:0 auto;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-  .topbar .brand{font-weight:800;font-size:1.15rem;letter-spacing:-.01em;cursor:pointer}
-  .topbar .brand span{font-family:var(--mono);font-size:.78rem;font-weight:700;background:var(--petrol);color:#fff;padding:2px 8px;border-radius:6px;vertical-align:middle}
-  .topbar .claim{font-size:.78rem;opacity:.75}
-  .wrap{max-width:860px;margin:0 auto;padding:20px 16px 0}
-  .sub{color:var(--dim);font-size:.9rem;margin-top:2px}
-  h2.sec{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--petrol);margin:26px 0 12px}
-  /* ---------- Modul-Karten ---------- */
-  .mods{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media(max-width:640px){.mods{grid-template-columns:1fr}}
-  details.mod{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;align-self:start}
-  details.mod > summary{cursor:pointer;padding:14px 16px;font-weight:700;font-size:.92rem;list-style:none;display:flex;gap:10px;align-items:center}
-  details.mod > summary .mi{font-size:1.2rem}
-  details.mod > summary::after{content:"\25B8";color:var(--accent-d);margin-left:auto;font-size:.8rem}
-  details.mod[open] > summary::after{content:"\25BE"}
-  details.mod[open]{border-color:var(--accent)}
-  .mod .body{padding:2px 16px 16px;font-size:.87rem}
-  .mod .body p{margin:6px 0;color:var(--dim)}
-  .mod .body p b{color:var(--txt)}
-  .mod .body ul,.mod .body ol{margin:6px 0 6px 4px;color:var(--dim)}
-  .mod .body li{margin:4px 0 4px 16px}
-  .mod .body li b{color:var(--txt)}
-  .mod .body code{font-family:var(--mono);color:var(--petrol);font-size:.8rem;font-weight:700}
-  .lrow{display:grid;grid-template-columns:1fr;gap:10px;margin-top:8px}
-  .lbox{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-  .lbox h4{font-size:.82rem;margin-bottom:5px}
-  .lbox.s03 h4{color:var(--accent-d)}
-  .lbox.s04 h4{color:var(--teal)}
-  .lbox p{font-size:.8rem;color:var(--dim)}
-  .lbox .cls{font-family:var(--mono);font-size:.76rem;color:var(--txt);display:block;margin:2px 0}
-  .trap{background:var(--errbg);border:1px solid var(--err);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:.84rem}
-  .trap b{color:var(--err)}
-  /* ---------- Quiz-Kacheln ---------- */
-  .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  @media(max-width:640px){.tiles{grid-template-columns:1fr}}
-  .tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;cursor:pointer;text-align:left;color:var(--txt);transition:.15s;font-family:inherit}
-  .tile:hover{border-color:var(--accent-d);transform:translateY(-2px);box-shadow:0 6px 16px rgba(29,29,27,.10)}
-  .tile .ti{font-size:1.6rem;margin-bottom:8px}
-  .tile .tt{font-weight:800;font-size:1rem;margin-bottom:4px}
-  .tile .td{font-size:.82rem;color:var(--dim)}
-  .tile .tm{margin-top:10px;font-family:var(--mono);font-size:.72rem;color:var(--petrol);font-weight:700}
-  .tile.wide{grid-column:1/-1;border-left:5px solid var(--accent);background:linear-gradient(135deg,#fff,rgba(144,208,51,.10))}
-  /* ---------- Quiz-Ansicht ---------- */
-  .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:6px 0 14px}
-  .seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-  .seg button{background:none;border:none;color:var(--dim);padding:8px 14px;font-size:.85rem;cursor:pointer;font-weight:600;transition:.15s}
-  .seg button.on{background:var(--petrol);color:#fff}
-  .seg button:not(.on):hover{color:var(--txt);background:var(--card2)}
-  .label{font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-right:2px}
-  .back{background:none;border:1px solid var(--petrol);color:var(--petrol);border-radius:10px;padding:8px 14px;font-size:.85rem;font-weight:700;cursor:pointer}
-  .back:hover{background:var(--petrol);color:#fff}
-  .score{display:flex;gap:18px;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:10px 16px;margin-bottom:18px;font-size:.85rem;color:var(--dim);flex-wrap:wrap}
-  .score b{color:var(--txt);font-family:var(--mono)}
-  .score .streak b{color:var(--accent-d)}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:0 4px 18px rgba(29,29,27,.07)}
-  .qmeta{font-size:.75rem;color:var(--petrol);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px}
-  .qtext{font-size:1.15rem;font-weight:600;margin-bottom:6px}
-  .qsub{color:var(--dim);font-size:.9rem;margin-bottom:18px}
-  .betrag{font-family:var(--mono);background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:2px 10px;color:var(--petrol);font-weight:700}
-  .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  @media(max-width:560px){.opts{grid-template-columns:1fr}}
-  .opt{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;text-align:left;color:var(--txt);font-size:.95rem;transition:.12s;display:flex;gap:10px;align-items:baseline;justify-content:center}
-  .opt:hover{border-color:var(--accent-d);transform:translateY(-1px);box-shadow:0 3px 10px rgba(29,29,27,.08)}
-  .opt .nr{font-family:var(--mono);color:var(--petrol);font-weight:700;font-size:1.05rem}
-  .opt.correct{border-color:var(--ok);background:var(--okbg)}
-  .opt.wrong{border-color:var(--err);background:var(--errbg)}
-  .opt:disabled{cursor:default;opacity:.85}
-  .satzrow{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px}
-  .field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:220px}
-  .field label{font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
-  select{background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:11px 12px;font-size:.9rem;font-family:var(--mono);width:100%}
-  select:focus{outline:none;border-color:var(--teal)}
-  .an{font-family:var(--mono);color:var(--dim);padding-bottom:12px;font-weight:700}
-  .hard{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--dim);margin:4px 0 14px;cursor:pointer;user-select:none}
-  .hard input{accent-color:var(--accent-d);width:16px;height:16px;cursor:pointer}
-  .fb{margin-top:16px;border-radius:10px;padding:14px 16px;font-size:.9rem;display:none}
-  .fb.show{display:block}
-  .fb.ok{background:var(--okbg);border:1px solid var(--ok)}
-  .fb.err{background:var(--errbg);border:1px solid var(--err)}
-  .fb .satz{font-family:var(--mono);margin-top:6px;color:var(--txt);line-height:1.7}
-  .fb .why{color:var(--dim);margin-top:8px}
-  .fb ol{margin:8px 0 4px 20px;color:var(--dim)}
-  .fb ol li{margin:3px 0}
-  .fb ol b{color:var(--txt)}
-  .actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
-  .btn{background:var(--accent);border:none;color:var(--txt);border-radius:10px;padding:11px 22px;font-size:.9rem;font-weight:700;cursor:pointer;transition:.15s}
-  .btn:hover{background:var(--accent-d);color:#fff}
-  .btn.ghost{background:none;border:1px solid var(--petrol);color:var(--petrol)}
-  .btn.ghost:hover{background:var(--petrol);color:#fff}
-  .result{text-align:center;padding:10px 0}
-  .result .big{font-size:3rem;font-weight:800;font-family:var(--mono);margin:8px 0;color:var(--petrol)}
-  .result .grade{font-size:1.1rem;font-weight:700;margin-bottom:6px}
-  .result .rdim{color:var(--dim);font-size:.88rem}
-  .mistakes{text-align:left;margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
-  .mistakes h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--err);margin-bottom:10px}
-  .mistakes .m{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:.85rem}
-  .mistakes .m .mq{color:var(--dim)}
-  .mistakes .m .ma{font-family:var(--mono);color:var(--petrol);margin-top:3px}
-  /* ---------- Case-Study-Belege ---------- */
-  .doc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px;font-size:.85rem;box-shadow:0 2px 8px rgba(29,29,27,.06);position:relative}
-  .stamp{position:absolute;top:14px;right:14px;border:2px dashed var(--petrol);color:var(--petrol);border-radius:8px;padding:3px 8px;font-family:var(--mono);font-size:.65rem;font-weight:700;transform:rotate(6deg);letter-spacing:.06em}
-  .doc .dh{display:flex;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-  .doc .dsender{font-weight:800;color:var(--petrol);font-size:.95rem}
-  .doc .daddr{color:var(--dim);font-size:.78rem}
-  .doc .dmeta{text-align:right;font-size:.8rem;color:var(--dim)}
-  .doc .dmeta b{color:var(--txt)}
-  .doc .dto{font-size:.82rem;margin-bottom:10px;color:var(--dim)}
-  table.inv{width:100%;border-collapse:collapse;margin:10px 0;font-size:.83rem}
-  table.inv th{text-align:left;color:var(--dim);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--line);padding:4px 6px}
-  table.inv td{padding:6px;border-bottom:1px solid var(--line)}
-  table.inv .r{text-align:right;font-family:var(--mono)}
-  table.inv tr.tot td{border-bottom:none;border-top:2px solid var(--petrol);font-weight:800}
-  table.inv tr.hlrow td{background:rgba(144,208,51,.22)}
-  table.inv tr.hlrow td:first-child{border-left:3px solid var(--accent-d)}
-  .doc .terms{font-size:.75rem;color:var(--dim);margin-top:8px}
-  .neg{color:var(--err)}
-  .pos{color:var(--ok)}
-  .receipt{max-width:340px;margin:0 auto 16px;font-family:var(--mono);border-style:dashed;border-width:2px}
-  .receipt .rc{text-align:center}
-  .receipt .rline{display:flex;justify-content:space-between;margin:3px 0}
-  .receipt hr{border:none;border-top:1px dashed var(--dim);margin:8px 0}
-  details.cheat{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-  details.cheat > summary{cursor:pointer;padding:14px 18px;font-weight:700;font-size:.95rem;list-style:none}
-  details.cheat > summary::before{content:"\25B8 ";color:var(--accent-d)}
-  details.cheat[open] > summary::before{content:"\25BE "}
-  table{width:100%;border-collapse:collapse;font-size:.85rem}
-  th,td{padding:8px 18px;text-align:left;border-top:1px solid var(--line)}
-  th{color:var(--dim);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
-  td.nr{font-family:var(--mono);color:var(--petrol);font-weight:700}
-  td.art{color:var(--dim);font-size:.78rem}
-  .footnote{max-width:860px;margin:26px auto 0;padding:0 16px;font-size:.72rem;color:var(--dim)}
-  kbd{font-family:var(--mono);background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.75rem}
+  :root{--bg:#f4f6f0;--card:#fff;--card2:#eef2e7;--line:#dbe3d2;--txt:#1d1d1b;--dim:#5f6a61;--accent:#90d033;--accent-d:#77ab24;--petrol:#00595c;--teal:#039a9a;--ok:#2f9e44;--okbg:rgba(144,208,51,.14);--err:#d64541;--errbg:rgba(214,69,65,.08);--mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace}
+  *{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;min-height:100vh;padding:0 0 80px}.topbar{background:var(--accent);color:var(--txt);padding:14px 16px;border-bottom:4px solid var(--petrol)}.topbar .inner{max-width:860px;margin:0 auto;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.topbar .brand{font-weight:800;font-size:1.15rem;letter-spacing:-.01em;cursor:pointer}.topbar .brand span{font-family:var(--mono);font-size:.78rem;font-weight:700;background:var(--petrol);color:#fff;padding:2px 8px;border-radius:6px;vertical-align:middle}.topbar .claim{font-size:.78rem;opacity:.75}.wrap{max-width:860px;margin:0 auto;padding:20px 16px 0}.sub{color:var(--dim);font-size:.9rem;margin-top:2px}h2.sec{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--petrol);margin:26px 0 12px}.mods{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.mods{grid-template-columns:1fr}}details.mod{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;align-self:start}details.mod>summary{cursor:pointer;padding:14px 16px;font-weight:700;font-size:.92rem;list-style:none;display:flex;gap:10px;align-items:center}details.mod>summary .mi{font-size:1.2rem}details.mod>summary:after{content:"\25B8";color:var(--accent-d);margin-left:auto;font-size:.8rem}details.mod[open]>summary:after{content:"\25BE"}details.mod[open]{border-color:var(--accent)}.mod .body{padding:2px 16px 16px;font-size:.87rem}.mod .body p{margin:6px 0;color:var(--dim)}.mod .body p b{color:var(--txt)}.mod .body ul,.mod .body ol{margin:6px 0 6px 4px;color:var(--dim)}.mod .body li{margin:4px 0 4px 16px}.mod .body li b{color:var(--txt)}.mod .body code{font-family:var(--mono);color:var(--petrol);font-size:.8rem;font-weight:700}.lrow{display:grid;grid-template-columns:1fr;gap:10px;margin-top:8px}.lbox{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}.lbox h4{font-size:.82rem;margin-bottom:5px}.lbox.s03 h4{color:var(--accent-d)}.lbox.s04 h4{color:var(--teal)}.lbox p{font-size:.8rem;color:var(--dim)}.lbox .cls{font-family:var(--mono);font-size:.76rem;color:var(--txt);display:block;margin:2px 0}.trap{background:var(--errbg);border:1px solid var(--err);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:.84rem}.trap b{color:var(--err)}
+  /* Nummernmodul */
+  .numlearn{margin-top:10px;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px}.numlearn h4{font-size:.88rem;color:var(--petrol);margin-bottom:6px}.numlearn p{font-size:.82rem;color:var(--dim);margin:5px 0}.classgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:8px 0}.classbtn{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:8px;cursor:pointer;text-align:left;font-size:.78rem;color:var(--txt);transition:.12s}.classbtn:hover,.classbtn.sel{border-color:var(--accent-d);background:rgba(144,208,51,.18)}.classbtn code{display:block;font-family:var(--mono);font-weight:700;color:var(--petrol);font-size:.85rem}.classbtn span{display:block;color:var(--dim);font-size:.72rem;margin-top:2px}.numq{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);display:none}.numq.show{display:block}.numq .prompt{font-size:.85rem;font-weight:700;margin-bottom:8px}.numopts{display:grid;grid-template-columns:1fr 1fr;gap:7px}.numopt{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px;cursor:pointer;color:var(--petrol);font-family:var(--mono);font-weight:700}.numopt:hover{border-color:var(--teal)}.numopt.good{background:var(--okbg);border-color:var(--ok)}.numopt.bad{background:var(--errbg);border-color:var(--err)}.numfb{font-size:.78rem;color:var(--dim);margin-top:8px;display:none}.numfb.show{display:block}.comparemini{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.comparemini div{background:var(--card);padding:8px;border-radius:7px;font-size:.76rem}.comparemini b{display:block;color:var(--petrol);font-family:var(--mono);font-size:.9rem}.comparemini small{color:var(--dim)}
+  .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}@media(max-width:640px){.tiles{grid-template-columns:1fr}}.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;cursor:pointer;text-align:left;color:var(--txt);transition:.15s;font-family:inherit}.tile:hover{border-color:var(--accent-d);transform:translateY(-2px);box-shadow:0 6px 16px rgba(29,29,27,.10)}.tile .ti{font-size:1.6rem;margin-bottom:8px}.tile .tt{font-weight:800;font-size:1rem;margin-bottom:4px}.tile .td{font-size:.82rem;color:var(--dim)}.tile .tm{margin-top:10px;font-family:var(--mono);font-size:.72rem;color:var(--petrol);font-weight:700}.tile.wide{grid-column:1/-1;border-left:5px solid var(--accent);background:linear-gradient(135deg,#fff,rgba(144,208,51,.10))}
+  .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:6px 0 14px}.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}.seg button{background:none;border:none;color:var(--dim);padding:8px 14px;font-size:.85rem;cursor:pointer;font-weight:600;transition:.15s}.seg button.on{background:var(--petrol);color:#fff}.seg button:not(.on):hover{color:var(--txt);background:var(--card2)}.label{font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-right:2px}.back{background:none;border:1px solid var(--petrol);color:var(--petrol);border-radius:10px;padding:8px 14px;font-size:.85rem;font-weight:700;cursor:pointer}.back:hover{background:var(--petrol);color:#fff}.score{display:flex;gap:18px;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:10px 16px;margin-bottom:18px;font-size:.85rem;color:var(--dim);flex-wrap:wrap}.score b{color:var(--txt);font-family:var(--mono)}.score .streak b{color:var(--accent-d)}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:0 4px 18px rgba(29,29,27,.07)}.qmeta{font-size:.75rem;color:var(--petrol);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px}.qtext{font-size:1.15rem;font-weight:600;margin-bottom:6px}.qsub{color:var(--dim);font-size:.9rem;margin-bottom:18px}.betrag{font-family:var(--mono);background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:2px 10px;color:var(--petrol);font-weight:700}.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.opts{grid-template-columns:1fr}}.opt{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;text-align:left;color:var(--txt);font-size:.95rem;transition:.12s;display:flex;gap:10px;align-items:baseline;justify-content:center}.opt:hover{border-color:var(--accent-d);transform:translateY(-1px);box-shadow:0 3px 10px rgba(29,29,27,.08)}.opt .nr{font-family:var(--mono);color:var(--petrol);font-weight:700;font-size:1.05rem}.opt.correct{border-color:var(--ok);background:var(--okbg)}.opt.wrong{border-color:var(--err);background:var(--errbg)}.satzrow{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px}.field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:220px}.field label{font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-weight:700}select{background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:11px 12px;font-size:.9rem;font-family:var(--mono);width:100%}select:focus{outline:none;border-color:var(--teal)}.an{font-family:var(--mono);color:var(--dim);padding-bottom:12px;font-weight:700}.hard{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--dim);margin:4px 0 14px;cursor:pointer;user-select:none}.hard input{accent-color:var(--accent-d);width:16px;height:16px;cursor:pointer}.fb{margin-top:16px;border-radius:10px;padding:14px 16px;font-size:.9rem;display:none}.fb.show{display:block}.fb.ok{background:var(--okbg);border:1px solid var(--ok)}.fb.err{background:var(--errbg);border:1px solid var(--err)}.fb .satz{font-family:var(--mono);margin-top:6px;color:var(--txt);line-height:1.7}.fb .why{color:var(--dim);margin-top:8px}.fb ol{margin:8px 0 4px 20px;color:var(--dim)}.fb ol li{margin:3px 0}.fb ol b{color:var(--txt)}.actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}.btn{background:var(--accent);border:none;color:var(--txt);border-radius:10px;padding:11px 22px;font-size:.9rem;font-weight:700;cursor:pointer;transition:.15s}.btn:hover{background:var(--accent-d);color:#fff}.btn.ghost{background:none;border:1px solid var(--petrol);color:var(--petrol)}.btn.ghost:hover{background:var(--petrol);color:#fff}.result{text-align:center;padding:10px 0}.result .big{font-size:3rem;font-weight:800;font-family:var(--mono);margin:8px 0;color:var(--petrol)}.result .grade{font-size:1.1rem;font-weight:700;margin-bottom:6px}.result .rdim{color:var(--dim);font-size:.88rem}.mistakes{text-align:left;margin-top:18px;border-top:1px solid var(--line);padding-top:14px}.mistakes h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--err);margin-bottom:10px}.mistakes .m{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:.85rem}.mistakes .m .mq{color:var(--dim)}.mistakes .m .ma{font-family:var(--mono);color:var(--petrol);margin-top:3px}
+  .doc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px;font-size:.85rem;box-shadow:0 2px 8px rgba(29,29,27,.06);position:relative}.stamp{position:absolute;top:14px;right:14px;border:2px dashed var(--petrol);color:var(--petrol);border-radius:8px;padding:3px 8px;font-family:var(--mono);font-size:.65rem;font-weight:700;transform:rotate(6deg);letter-spacing:.06em}.doc .dh{display:flex;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}.doc .dsender{font-weight:800;color:var(--petrol);font-size:.95rem}.doc .daddr{color:var(--dim);font-size:.78rem}.doc .dmeta{text-align:right;font-size:.8rem;color:var(--dim)}.doc .dmeta b{color:var(--txt)}.doc .dto{font-size:.82rem;margin-bottom:10px;color:var(--dim)}table.inv{width:100%;border-collapse:collapse;margin:10px 0;font-size:.83rem}table.inv th{text-align:left;color:var(--dim);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--line);padding:4px 6px}table.inv td{padding:6px;border-bottom:1px solid var(--line)}table.inv .r{text-align:right;font-family:var(--mono)}table.inv tr.tot td{border-bottom:none;border-top:2px solid var(--petrol);font-weight:800}table.inv tr.hlrow td{background:rgba(144,208,51,.22)}table.inv tr.hlrow td:first-child{border-left:3px solid var(--accent-d)}.doc .terms{font-size:.75rem;color:var(--dim);margin-top:8px}.receipt{max-width:340px;margin:0 auto 16px;font-family:var(--mono);border-style:dashed;border-width:2px}.receipt .rc{text-align:center}.receipt .rline{display:flex;justify-content:space-between;margin:3px 0}.receipt hr{border:none;border-top:1px dashed var(--dim);margin:8px 0}.neg{color:var(--err)}.pos{color:var(--ok)}details.cheat{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}details.cheat>summary{cursor:pointer;padding:14px 18px;font-weight:700;font-size:.95rem;list-style:none}details.cheat>summary:before{content:"\25B8 ";color:var(--accent-d)}details.cheat[open]>summary:before{content:"\25BE "}table{width:100%;border-collapse:collapse;font-size:.85rem}th,td{padding:8px 18px;text-align:left;border-top:1px solid var(--line)}th{color:var(--dim);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}td.nr{font-family:var(--mono);color:var(--petrol);font-weight:700}td.art{color:var(--dim);font-size:.78rem}.footnote{max-width:860px;margin:26px auto 0;padding:0 16px;font-size:.72rem;color:var(--dim)}
 </style>
 </head>
 <body>
-<div class="topbar">
-  <div class="inner">
-    <div class="brand" id="brandHome">Kontierungstrainer <span>SKR03 ⇄ SKR04</span></div>
-    <div class="claim">Buchhaltung üben im DATEV-Look</div>
-  </div>
-</div>
+<div class="topbar"><div class="inner"><div class="brand" id="brandHome">Kontierungstrainer <span>SKR03 ⇄ SKR04</span></div><div class="claim">Buchhaltung üben im DATEV-Look</div></div></div>
 
-<!-- ============ STARTSEITE ============ -->
 <div class="wrap" id="home">
   <p class="sub">Lerne die DATEV-Kontenrahmen in sechs Modulen – teste dich in vier Quiz-Modi – und kontiere am Ende einen kompletten Monat.</p>
-
   <h2 class="sec">Lernmodule</h2>
   <div class="mods">
-
-    <details class="mod">
-      <summary><span class="mi">📚</span> 1 · Was ist ein Kontenrahmen?</summary>
-      <div class="body">
-        <p>Ein <b>Kontenrahmen</b> ist die standardisierte Gesamtliste aller Buchungskonten – der Katalog, aus dem dein Betrieb seinen eigenen Kontenplan ableitet.</p>
-        <p>In Deutschland nutzen fast alle Steuerkanzleien die <b>DATEV-Standardkontenrahmen SKR03 und SKR04</b>. Beide bilden dieselben Geschäftsvorfälle ab und führen zum identischen Jahresabschluss – sie unterscheiden sich nur in der Sortierung.</p>
-        <p><b>Kontieren</b> heißt: jeden Beleg (Rechnung, Kassenzettel, Kontoauszug) dem richtigen Konto aus diesem Rahmen zuweisen.</p>
-      </div>
-    </details>
-
-    <details class="mod">
-      <summary><span class="mi">⚖️</span> 2 · SKR03 vs. SKR04</summary>
-      <div class="body">
-        <p>Derselbe Inhalt, zwei Sortierungen – dasselbe Konto trägt je nach Rahmen eine andere Nummer.</p>
-        <div class="lrow">
-          <div class="lbox s03">
-            <h4>SKR03 · Prozessgliederung</h4>
-            <p>Nach betrieblichem Ablauf. Für kleine Betriebe, Freiberufler, EÜR.</p>
-            <span class="cls">0 · Anlage- &amp; Kapital</span>
-            <span class="cls">1 · Finanzen &amp; Privat</span>
-            <span class="cls">3 · Wareneingang</span>
-            <span class="cls">4 · Aufwendungen</span>
-            <span class="cls">8 · Erlöse</span>
-          </div>
-          <div class="lbox s04">
-            <h4>SKR04 · Abschlussgliederung</h4>
-            <p>Nach Bilanz &amp; GuV (§ 266 HGB). Für GmbH, UG, Bilanzierer.</p>
-            <span class="cls">0 · Anlagevermögen</span>
-            <span class="cls">1 · Umlaufvermögen</span>
-            <span class="cls">2 · Eigenkapital</span>
-            <span class="cls">3 · Fremdkapital</span>
-            <span class="cls">4–7 · Erträge / Aufwendungen</span>
-          </div>
-        </div>
-        <p>Wer bei einer Kanzlei ist, übernimmt deren Rahmen. Einmal gewählt, bleibt man dabei – ein Wechsel ist aufwändig.</p>
-      </div>
-    </details>
-
-    <details class="mod">
-      <summary><span class="mi">🗂️</span> 3 · Die vier Kontenarten</summary>
-      <div class="body">
-        <ul>
-          <li><b>Aktivkonten</b>: Kasse, Bank, Forderungen, Maschinen – zeigen, was du <i>hast</i>. Zunahme im <b>Soll</b>, Abnahme im <b>Haben</b>.</li>
-          <li><b>Passivkonten</b>: Verbindlichkeiten, Darlehen, Eigenkapital, USt-Schuld – zeigen, <i>wem es gehört</i>. Zunahme im <b>Haben</b>, Abnahme im <b>Soll</b>.</li>
-          <li><b>Aufwandskonten</b>: Miete, Büromaterial, Löhne – Geld, das <i>rausgeht</i>. Werden im <b>Soll</b> bebucht.</li>
-          <li><b>Ertragskonten</b>: Erlöse – Geld, das <i>reinkommt</i>. Werden im <b>Haben</b> bebucht.</li>
-        </ul>
-      </div>
-    </details>
-
-    <details class="mod">
-      <summary><span class="mi">🧭</span> 4 · Soll an Haben</summary>
-      <div class="body">
-        <p>Die <b>doppelte Buchführung</b> bucht jeden Vorgang mindestens zweimal: im <b>Soll</b> und im <b>Haben</b> – der Gesamtbetrag ist beidseitig immer gleich.</p>
-        <ul>
-          <li>Merksatz: <b>Soll = wohin fließt der Wert, Haben = woher kommt er.</b></li>
-          <li>Beispiel: Büromaterial bar gekauft → <code>4930 Büromaterial an 1000 Kasse</code> (SKR03).</li>
-        </ul>
-        <p><b>Die 4-Fragen-Methode</b> – so leitest du jeden Satz ab:</p>
-        <ol>
-          <li><b>Welche Konten</b> sind betroffen?</li>
-          <li><b>Welche Kontenart</b> hat jedes Konto?</li>
-          <li><b>Zunahme oder Abnahme</b> auf jedem Konto?</li>
-          <li><b>Welche Seite</b> – Soll oder Haben?</li>
-        </ol>
-      </div>
-    </details>
-
-    <details class="mod">
-      <summary><span class="mi">🧾</span> 5 · Steuer &amp; zusammengesetzte Sätze</summary>
-      <div class="body">
-        <p>Sobald Umsatz- oder Vorsteuer ins Spiel kommt, hat eine Seite <b>zwei Konten</b> – das ist ein zusammengesetzter Buchungssatz:</p>
-        <ul>
-          <li>Einkauf: <code>Büromaterial 100 € + Vorsteuer 19 € an Kasse 119 €</code></li>
-          <li>Verkauf: <code>Kasse 119 € an Erlöse 100 € + Umsatzsteuer 19 €</code> – die USt liegt im Haben, denn du schuldest sie dem Finanzamt (Passivkonto!).</li>
-          <li>In der Praxis nutzen Programme <b>Automatikkonten</b> (<code>8400/4400</code>), die die Steuer selbst umbuchen – der Modus „Mit Steuer" trainiert bewusst die ausführliche Variante.</li>
-        </ul>
-        <p>Steuersätze: <b>19 %</b> Regelsatz · <b>7 %</b> ermäßigt (Bücher, Lebensmittel) · steuerfrei: Miete, Gehälter, Versicherungen.</p>
-      </div>
-    </details>
-
-    <details class="mod">
-      <summary><span class="mi">⚠️</span> 6 · Typische Fallen</summary>
-      <div class="body">
-        <div class="trap">
-          <b>Nummern-Kollision:</b> <code>1200</code> ist im SKR03 die <b>Bank</b>, im SKR04 die <b>Forderungen</b>. Und <code>1600</code> ist im SKR03 eine <b>Verbindlichkeit</b>, im SKR04 die <b>Kasse</b>.
-        </div>
-        <ul>
-          <li><b>Privatentnahmen sind kein Aufwand</b> – sie mindern das Eigenkapital, nicht den Gewinn.</li>
-          <li><b>Rechnung stellen ≠ Geld bekommen:</b> Erst <code>Forderungen an Erlöse</code>, beim Zahlungseingang dann <code>Bank an Forderungen</code>.</li>
-          <li><b>Darlehen aufnehmen ist kein Erlös</b> – <code>Bank an Darlehen</code>, steuerneutral.</li>
-          <li><b>Abschreibungen:</b> Es fließt kein Geld – <code>4830 Abschreibungen an 0210 Maschinen</code> (SKR03).</li>
-        </ul>
-      </div>
-    </details>
-
+    <details class="mod"><summary><span class="mi">📚</span> 1 · Was ist ein Kontenrahmen?</summary><div class="body"><p>Ein <b>Kontenrahmen</b> ist die standardisierte Gesamtliste aller Buchungskonten – der Katalog, aus dem dein Betrieb seinen eigenen Kontenplan ableitet.</p><p>In Deutschland nutzen fast alle Steuerkanzleien die <b>DATEV-Standardkontenrahmen SKR03 und SKR04</b>. Beide bilden dieselben Geschäftsvorfälle ab und führen zum identischen Jahresabschluss – sie unterscheiden sich nur in der Sortierung.</p><p><b>Kontieren</b> heißt: jeden Beleg dem richtigen Konto aus diesem Rahmen zuweisen.</p></div></details>
+    <details class="mod"><summary><span class="mi">⚖️</span> 2 · SKR03 vs. SKR04</summary><div class="body"><p>Derselbe Inhalt, zwei Sortierungen – dasselbe Konto trägt je nach Rahmen eine andere Nummer.</p><div class="lrow"><div class="lbox s03"><h4>SKR03 · Prozessgliederung</h4><p>Nach betrieblichem Ablauf.</p><span class="cls">0 · Anlage- &amp; Kapital</span><span class="cls">1 · Finanzen &amp; Privat</span><span class="cls">3 · Wareneingang</span><span class="cls">4 · Aufwendungen</span><span class="cls">8 · Erlöse</span></div><div class="lbox s04"><h4>SKR04 · Abschlussgliederung</h4><p>Nach Bilanz &amp; GuV (§ 266 HGB).</p><span class="cls">0 · Anlagevermögen</span><span class="cls">1 · Umlaufvermögen</span><span class="cls">2 · Eigenkapital</span><span class="cls">3 · Fremdkapital</span><span class="cls">4–7 · Erträge / Aufwendungen</span></div></div><p>Wer bei einer Kanzlei ist, übernimmt deren Rahmen. Einmal gewählt, bleibt man dabei.</p></div></details>
+    <details class="mod"><summary><span class="mi">🗂️</span> 3 · Die vier Kontenarten</summary><div class="body"><ul><li><b>Aktivkonten</b>: Kasse, Bank, Forderungen, Maschinen. Zunahme im <b>Soll</b>, Abnahme im <b>Haben</b>.</li><li><b>Passivkonten</b>: Verbindlichkeiten, Darlehen, Eigenkapital, USt-Schuld. Zunahme im <b>Haben</b>, Abnahme im <b>Soll</b>.</li><li><b>Aufwandskonten</b>: Miete, Büromaterial, Löhne. Im <b>Soll</b>.</li><li><b>Ertragskonten</b>: Erlöse. Im <b>Haben</b>.</li></ul></div></details>
+    <details class="mod"><summary><span class="mi">🧭</span> 4 · Soll an Haben</summary><div class="body"><p>Die doppelte Buchführung bucht jeden Vorgang mindestens zweimal: im <b>Soll</b> und im <b>Haben</b> – der Gesamtbetrag ist beidseitig gleich.</p><ul><li>Merksatz: <b>Soll = wohin fließt der Wert, Haben = woher kommt er.</b></li><li>Beispiel: Büromaterial bar → <code>4930 Büromaterial an 1000 Kasse</code> (SKR03).</li></ul><p><b>4-Fragen-Methode:</b> Welche Konten? Welche Kontenart? Zu-/Abnahme? Soll/Haben?</p></div></details>
+    <details class="mod"><summary><span class="mi">🧾</span> 5 · Steuer &amp; zusammengesetzte Sätze</summary><div class="body"><p>Sobald Umsatz- oder Vorsteuer ins Spiel kommt, hat eine Seite zwei Konten:</p><ul><li>Einkauf: <code>Büromaterial 100 € + Vorsteuer 19 € an Kasse 119 €</code></li><li>Verkauf: <code>Kasse 119 € an Erlöse 100 € + Umsatzsteuer 19 €</code></li><li>Automatikkonten (<code>8400/4400</code>) buchen die Steuer automatisch.</li></ul><p><b>19 %</b> Regelsatz · <b>7 %</b> ermäßigt · steuerfrei: Miete, Gehälter, Versicherungen.</p></div></details>
+    <details class="mod"><summary><span class="mi">🔢</span> 6 · Kontonummern lesen &amp; herleiten</summary><div class="body"><p>Die <b>erste Ziffer</b> zeigt die Kontenklasse. Sie gibt dir eine grobe Richtung – die vollständige Nummer musst du im Kontenplan nachschlagen oder lernen.</p><div class="numlearn"><h4>Schritt 1: Kontenklasse anklicken</h4><p>Wähle eine Klasse und sieh, welche Gruppe sie im jeweiligen Rahmen beschreibt:</p><div class="classgrid" id="classgrid"></div><div class="numq" id="numq"><div class="prompt" id="numprompt"></div><div class="numopts" id="numopts"></div><div class="numfb" id="numfb"></div><div class="comparemini" id="comparemini"></div></div></div><p style="margin-top:10px"><b>Merke:</b> SKR03 sortiert nach Prozess (`4xxx` = Aufwand, `8xxx` = Erlöse), SKR04 nach Abschluss (`4xxx` = Erträge, `6xxx` = Aufwand). Die Nummern sind Kennziffern, keine Rechenformel.</p></div></details>
   </div>
-
   <h2 class="sec">Quiz starten</h2>
   <div class="tiles">
-    <button class="tile" data-mode="konto">
-      <div class="ti">🔢</div>
-      <div class="tt">Konto finden</div>
-      <div class="td">Welche Nummer hat „Büromaterial"? Pauke die 22 wichtigsten Konten – nur Nummern, keine Namen.</div>
-      <div class="tm">10 Fragen pro Runde · SKR03 oder SKR04</div>
-    </button>
-    <button class="tile" data-mode="satz">
-      <div class="ti">✍️</div>
-      <div class="tt">Buchungssatz</div>
-      <div class="td">14 Geschäftsfälle: Bilde den Satz Soll an Haben – mit 4-Schritte-Lösungsweg nach jeder Antwort.</div>
-      <div class="tm">10 Fragen pro Runde · mit Schwer-Modus</div>
-    </button>
-    <button class="tile" data-mode="comp">
-      <div class="ti">🧾</div>
-      <div class="tt">Mit Steuer</div>
-      <div class="td">Zusammengesetzte Sätze mit Vorsteuer &amp; Umsatzsteuer auf eigenen Konten – der Prüfungsklassiker.</div>
-      <div class="tm">8 Fälle · bis zu 2 Konten pro Seite</div>
-    </button>
-    <button class="tile" data-mode="map">
-      <div class="ti">🔁</div>
-      <div class="tt">SKR03 ⇄ SKR04</div>
-      <div class="td">Umschlüsseln zwischen beiden Rahmen – inkl. der berühmten 1200/1600-Falle.</div>
-      <div class="tm">10 Fragen pro Runde · beide Richtungen</div>
-    </button>
-    <button class="tile wide" data-mode="case">
-      <div class="ti">📁</div>
-      <div class="tt">Case Study: Ein Monat bei „Nordlicht Digital"</div>
-      <div class="td">Die letzte Stufe – wie im Arbeitsalltag: 9 echte Belege kontieren. Ausgangsrechnung, Eingangsrechnung, Tankbeleg, Kontoauszug Zeile für Zeile, Gehaltsabrechnung.</div>
-      <div class="tm">9 Belege · feste Reihenfolge · mit Story</div>
-    </button>
+    <button class="tile" data-mode="konto"><div class="ti">🔢</div><div class="tt">Konto finden</div><div class="td">Welche Nummer hat „Büromaterial"? Pauke die 22 wichtigsten Konten – nur Nummern.</div><div class="tm">10 Fragen · SKR03 oder SKR04</div></button>
+    <button class="tile" data-mode="satz"><div class="ti">✍️</div><div class="tt">Buchungssatz</div><div class="td">14 Geschäftsfälle: Bilde den Satz Soll an Haben – mit Lösungsweg.</div><div class="tm">10 Fragen · Schwer-Modus</div></button>
+    <button class="tile" data-mode="comp"><div class="ti">🧾</div><div class="tt">Mit Steuer</div><div class="td">Zusammengesetzte Sätze mit Vorsteuer &amp; Umsatzsteuer.</div><div class="tm">10 Fragen · bis zu 2 Konten pro Seite</div></button>
+    <button class="tile" data-mode="map"><div class="ti">🔁</div><div class="tt">SKR03 ⇄ SKR04</div><div class="td">Umschlüsseln zwischen beiden Rahmen – inklusive 1200/1600-Falle.</div><div class="tm">10 Fragen · beide Richtungen</div></button>
+    <button class="tile wide" data-mode="case"><div class="ti">📁</div><div class="tt">Case Study: Ein Monat bei „Nordlicht Digital"</div><div class="td">9 echte Belege: Ausgangsrechnung, Eingangsrechnung, Tankbeleg, Kontoauszug Zeile für Zeile und Gehaltsabrechnung.</div><div class="tm">9 Belege · feste Reihenfolge · mit Story</div></button>
   </div>
-
-  <details class="cheat">
-    <summary>Spickzettel: die 22 wichtigsten Konten</summary>
-    <table id="cheat">
-      <thead><tr><th>Konto</th><th>SKR03</th><th>SKR04</th><th>Kontenart</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </details>
+  <details class="cheat"><summary>Spickzettel: die 22 wichtigsten Konten</summary><table id="cheat"><thead><tr><th>Konto</th><th>SKR03</th><th>SKR04</th><th>Kontenart</th></tr></thead><tbody></tbody></table></details>
 </div>
 
-<!-- ============ QUIZ-ANSICHT ============ -->
-<div class="wrap" id="quiz" style="display:none">
-  <div class="bar">
-    <button class="back" id="backBtn">← Übersicht</button>
-    <span class="label" id="fwLabel">Rahmen</span>
-    <div class="seg" id="fwSeg">
-      <button data-fw="s03" class="on">SKR03</button>
-      <button data-fw="s04">SKR04</button>
-    </div>
-  </div>
-
-  <div class="score">
-    <span>Richtig: <b id="scOk">0</b></span>
-    <span>Gesamt: <b id="scAll">0</b></span>
-    <span>Quote: <b id="scPct">–</b></span>
-    <span class="streak">Serie: <b id="scStreak">0</b> 🔥</span>
-  </div>
-
-  <div class="card" id="card"></div>
-</div>
-
-<p class="footnote">Inoffizielles Lernprojekt – nicht von der DATEV eG. Kontenrahmen SKR03/SKR04 sind Standardwerke der DATEV. Alle Firmen, Personen und Belege in der Case Study sind frei erfunden.</p>
+<div class="wrap" id="quiz" style="display:none"><div class="bar"><button class="back" id="backBtn">← Übersicht</button><span class="label" id="fwLabel">Rahmen</span><div class="seg" id="fwSeg"><button data-fw="s03" class="on">SKR03</button><button data-fw="s04">SKR04</button></div></div><div class="score"><span>Richtig: <b id="scOk">0</b></span><span>Gesamt: <b id="scAll">0</b></span><span>Quote: <b id="scPct">–</b></span><span class="streak">Serie: <b id="scStreak">0</b> 🔥</span></div><div class="card" id="card"></div></div>
+<p class="footnote">Inoffizielles Lernprojekt – nicht von der DATEV eG. Kontenrahmen SKR03/SKR04 sind Standardwerke der DATEV. Alle Case-Study-Daten sind frei erfunden.</p>
 
 <script>
-const KONTEN = [
-  {name:"Kasse", s03:"1000", s04:"1600", typ:"aktiv"},
-  {name:"Bank", s03:"1200", s04:"1800", typ:"aktiv"},
-  {name:"Forderungen aus L&L", s03:"1400", s04:"1200", typ:"aktiv"},
-  {name:"Vorsteuer 19 %", s03:"1576", s04:"1406", typ:"aktiv"},
-  {name:"Vorsteuer 7 %", s03:"1571", s04:"1401", typ:"aktiv"},
-  {name:"Maschinen", s03:"0210", s04:"0440", typ:"aktiv"},
-  {name:"Fuhrpark", s03:"0320", s04:"0520", typ:"aktiv"},
-  {name:"Verbindlichkeiten aus L&L", s03:"1600", s04:"3300", typ:"passiv"},
-  {name:"Umsatzsteuer 19 %", s03:"1776", s04:"3806", typ:"passiv"},
-  {name:"Umsatzsteuer 7 %", s03:"1771", s04:"3801", typ:"passiv"},
-  {name:"Darlehen", s03:"1700", s04:"3000", typ:"passiv"},
-  {name:"Privateinlagen", s03:"1800", s04:"2180", typ:"passiv"},
-  {name:"Privatentnahmen", s03:"1880", s04:"2100", typ:"passiv"},
-  {name:"Wareneingang 19 % VSt", s03:"3400", s04:"5400", typ:"aufwand"},
-  {name:"Löhne und Gehälter", s03:"4100", s04:"6020", typ:"aufwand"},
-  {name:"Miete (Büroraum)", s03:"4120", s04:"6310", typ:"aufwand"},
-  {name:"Reisekosten", s03:"4660", s04:"4670", typ:"aufwand"},
-  {name:"Abschreibungen auf Sachanlagen", s03:"4830", s04:"6220", typ:"aufwand"},
-  {name:"Telefon & Internet", s03:"4910", s04:"6805", typ:"aufwand"},
-  {name:"Büromaterial", s03:"4930", s04:"6815", typ:"aufwand"},
-  {name:"Erlöse 19 % USt", s03:"8400", s04:"4400", typ:"ertrag"},
-  {name:"Erlöse 7 % USt", s03:"8300", s04:"4300", typ:"ertrag"},
-];
+const KONTEN=[
+{name:"Kasse",s03:"1000",s04:"1600",typ:"aktiv"},{name:"Bank",s03:"1200",s04:"1800",typ:"aktiv"},{name:"Forderungen aus L&L",s03:"1400",s04:"1200",typ:"aktiv"},{name:"Vorsteuer 19 %",s03:"1576",s04:"1406",typ:"aktiv"},{name:"Vorsteuer 7 %",s03:"1571",s04:"1401",typ:"aktiv"},{name:"Maschinen",s03:"0210",s04:"0440",typ:"aktiv"},{name:"Fuhrpark",s03:"0320",s04:"0520",typ:"aktiv"},{name:"Verbindlichkeiten aus L&L",s03:"1600",s04:"3300",typ:"passiv"},{name:"Umsatzsteuer 19 %",s03:"1776",s04:"3806",typ:"passiv"},{name:"Umsatzsteuer 7 %",s03:"1771",s04:"3801",typ:"passiv"},{name:"Darlehen",s03:"1700",s04:"3000",typ:"passiv"},{name:"Privateinlagen",s03:"1800",s04:"2180",typ:"passiv"},{name:"Privatentnahmen",s03:"1880",s04:"2100",typ:"passiv"},{name:"Wareneingang 19 % VSt",s03:"3400",s04:"5400",typ:"aufwand"},{name:"Löhne und Gehälter",s03:"4100",s04:"6020",typ:"aufwand"},{name:"Miete (Büroraum)",s03:"4120",s04:"6310",typ:"aufwand"},{name:"Reisekosten",s03:"4660",s04:"4670",typ:"aufwand"},{name:"Abschreibungen auf Sachanlagen",s03:"4830",s04:"6220",typ:"aufwand"},{name:"Telefon & Internet",s03:"4910",s04:"6805",typ:"aufwand"},{name:"Büromaterial",s03:"4930",s04:"6815",typ:"aufwand"},{name:"Erlöse 19 % USt",s03:"8400",s04:"4400",typ:"ertrag"},{name:"Erlöse 7 % USt",s03:"8300",s04:"4300",typ:"ertrag"}];
+const CLASSINFO={s03:{0:"Anlage- und Kapitalkonten",1:"Finanz- und Privatkonten",2:"Abgrenzungskonten",3:"Wareneingang und Warenbestände",4:"Betriebliche Aufwendungen",5:"Weitere Aufwendungen",6:"Weitere Aufwendungen",7:"Weitere Aufwendungen",8:"Erlöse",9:"Abschluss- und statistische Konten"},s04:{0:"Anlagevermögen",1:"Umlaufvermögen",2:"Eigenkapital",3:"Fremdkapital",4:"Betriebliche Erträge",5:"Material- und Warenaufwand",6:"Betriebliche Aufwendungen",7:"Weitere Aufwendungen",8:"Eröffnungs- und Abschlusskonten",9:"Statistische Konten"}};
+const CLASSQUESTIONS=[
+{n:"Bank",from:"s03",cls:"1",ask:"Welche Kontenklasse gehört im SKR03 zur Bank?",opts:["0","1","4","8"]},
+{n:"Büromaterial",from:"s03",cls:"4",ask:"In welcher Klasse findest du Büromaterial im SKR03?",opts:["1","3","4","8"]},
+{n:"Erlöse 19 % USt",from:"s03",cls:"8",ask:"Welche Klasse enthält Erlöse im SKR03?",opts:["3","4","8","9"]},
+{n:"Bank",from:"s04",cls:"1",ask:"Welche Kontenklasse gehört im SKR04 zur Bank?",opts:["0","1","3","6"]},
+{n:"Büromaterial",from:"s04",cls:"6",ask:"In welcher Klasse findest du Büromaterial im SKR04?",opts:["3","4","6","8"]},
+{n:"Erlöse 19 % USt",from:"s04",cls:"4",ask:"Welche Klasse enthält Erlöse im SKR04?",opts:["3","4","6","8"]}];
+const SAETZE=[
+{t:"Du stellst einem Kunden eine Rechnung über 2.380 € brutto (19 % USt). Zahlungsziel: 14 Tage.",betrag:"2.380,00 €",soll:"Forderungen aus L&L",haben:"Erlöse 19 % USt",why:"Noch kein Geld geflossen → Forderung im Soll. Das Erlöskonto bucht die USt automatisch."},
+{t:"Der Kunde bezahlt die Rechnung per Überweisung: 2.380 € gehen auf dem Geschäftskonto ein.",betrag:"2.380,00 €",soll:"Bank",haben:"Forderungen aus L&L",why:"Zahlungseingang löst die Forderung aus: Bank im Soll, Forderung im Haben."},
+{t:"Du kaufst Druckerpapier und Stifte für 119 € brutto und zahlst bar.",betrag:"119,00 €",soll:"Büromaterial",haben:"Kasse",why:"Aufwand im Soll, Kasse im Haben. Die Vorsteuer wird über den Steuerschlüssel berücksichtigt."},
+{t:"Die monatliche Telefon- und Internetrechnung (59,50 € brutto) wird per Lastschrift abgebucht.",betrag:"59,50 €",soll:"Telefon & Internet",haben:"Bank",why:"Aufwand im Soll, Bankabgang im Haben."},
+{t:"Du kaufst Ware für 595 € brutto auf Ziel.",betrag:"595,00 €",soll:"Wareneingang 19 % VSt",haben:"Verbindlichkeiten aus L&L",why:"Wareneingang im Soll, Verbindlichkeit im Haben."},
+{t:"Du überweist 5.000 € von deinem Privatkonto auf das Geschäftskonto.",betrag:"5.000,00 €",soll:"Bank",haben:"Privateinlagen",why:"Privateinlage, kein Erlös: Bank im Soll, Privateinlage im Haben."},
+{t:"Du hebst 500 € ab und legst das Geld in die Bürokasse.",betrag:"500,00 €",soll:"Kasse",haben:"Bank",why:"Umschichtung zwischen Bestandskonten."},
+{t:"Du nimmst 200 € aus der Kasse für private Zwecke.",betrag:"200,00 €",soll:"Privatentnahmen",haben:"Kasse",why:"Privatentnahme ist kein Aufwand und mindert nicht den Gewinn."},
+{t:"Die Büromiete von 800 € wird per Dauerauftrag gezahlt.",betrag:"800,00 €",soll:"Miete (Büroraum)",haben:"Bank",why:"Mietaufwand im Soll, Bankabgang im Haben."},
+{t:"Du zahlst das Gehalt von 556 € per Überweisung.",betrag:"556,00 €",soll:"Löhne und Gehälter",haben:"Bank",why:"Personalaufwand im Soll, Bank im Haben."},
+{t:"Du kaufst einen Transporter für 11.900 € brutto per Überweisung.",betrag:"11.900,00 €",soll:"Fuhrpark",haben:"Bank",why:"Anlagevermögen im Soll, Bank im Haben."},
+{t:"Ein Kunde zahlt 1.070 € brutto (7 % USt) per Überweisung.",betrag:"1.070,00 €",soll:"Bank",haben:"Erlöse 7 % USt",why:"Ermäßigter Steuersatz: eigenes Erlöskonto."},
+{t:"Du schreibst Maschinen am Jahresende mit 1.000 € ab.",betrag:"1.000,00 €",soll:"Abschreibungen auf Sachanlagen",haben:"Maschinen",why:"Aufwand an Wertminderung des Anlagekontos; kein Geldfluss."},
+{t:"Du nimmst ein Darlehen über 10.000 € auf.",betrag:"10.000,00 €",soll:"Bank",haben:"Darlehen",why:"Bankzunahme im Soll, Darlehensschuld im Haben. Kein Erlös."}];
+const COMPOUND=[
+{t:"Büromaterial 119 € brutto bar (netto 100 € + 19 € VSt).",soll:["Büromaterial","Vorsteuer 19 %"],haben:["Kasse"],amt:{"Büromaterial":"100,00 €","Vorsteuer 19 %":"19,00 €","Kasse":"119,00 €"},why:"Aufwand + Vorsteuer im Soll, Kasse im Haben."},
+{t:"Maschine 11.900 € brutto auf Ziel (netto 10.000 € + 1.900 € VSt).",soll:["Maschinen","Vorsteuer 19 %"],haben:["Verbindlichkeiten aus L&L"],amt:{"Maschinen":"10.000,00 €","Vorsteuer 19 %":"1.900,00 €","Verbindlichkeiten aus L&L":"11.900,00 €"},why:"Maschine + Vorsteuer im Soll, Verbindlichkeit im Haben."},
+{t:"Warenverkauf 119 € brutto bar (netto 100 € + 19 € USt).",soll:["Kasse"],haben:["Erlöse 19 % USt","Umsatzsteuer 19 %"],amt:{"Kasse":"119,00 €","Erlöse 19 % USt":"100,00 €","Umsatzsteuer 19 %":"19,00 €"},why:"Kasse im Soll, Erlös + USt im Haben."},
+{t:"Rechnung 2.380 € brutto (netto 2.000 € + 380 € USt).",soll:["Forderungen aus L&L"],haben:["Erlöse 19 % USt","Umsatzsteuer 19 %"],amt:{"Forderungen aus L&L":"2.380,00 €","Erlöse 19 % USt":"2.000,00 €","Umsatzsteuer 19 %":"380,00 €"},why:"Forderung brutto im Soll; Erlös und USt im Haben."},
+{t:"Wareneinkauf auf Ziel: 595 € brutto (netto 500 € + 95 € VSt).",soll:["Wareneingang 19 % VSt","Vorsteuer 19 %"],haben:["Verbindlichkeiten aus L&L"],amt:{"Wareneingang 19 % VSt":"500,00 €","Vorsteuer 19 %":"95,00 €","Verbindlichkeiten aus L&L":"595,00 €"},why:"Aufwand + Vorsteuer im Soll, Verbindlichkeit im Haben."},
+{t:"Transporter 11.900 € brutto per Überweisung (netto 10.000 € + 1.900 € VSt).",soll:["Fuhrpark","Vorsteuer 19 %"],haben:["Bank"],amt:{"Fuhrpark":"10.000,00 €","Vorsteuer 19 %":"1.900,00 €","Bank":"11.900,00 €"},why:"Fuhrpark + Vorsteuer im Soll, Bank im Haben."},
+{t:"Telefonrechnung 59,50 € brutto per Lastschrift (netto 50 € + 9,50 € VSt).",soll:["Telefon & Internet","Vorsteuer 19 %"],haben:["Bank"],amt:{"Telefon & Internet":"50,00 €","Vorsteuer 19 %":"9,50 €","Bank":"59,50 €"},why:"Aufwand + Vorsteuer im Soll, Bank im Haben."},
+{t:"Bücherverkauf 1.070 € brutto auf Ziel (7 % USt).",soll:["Forderungen aus L&L"],haben:["Erlöse 7 % USt","Umsatzsteuer 7 %"],amt:{"Forderungen aus L&L":"1.070,00 €","Erlöse 7 % USt":"1.000,00 €","Umsatzsteuer 7 %":"70,00 €"},why:"Forderung brutto im Soll, Erlös + USt im Haben."}];
+const STMT={bank:"Musterbank Berlin",iban:"DE12 3456 7890 1234 5678 00",rows:[["01.04.","Dauerauftrag · Büro Torstraße – Miete April","−800,00"],["10.04.","Gutschrift · Müller GmbH, Rg. 2026-014","+2.380,00"],["12.04.","Lastschrift · Telekom Deutschland","−59,50"],["15.04.","Überweisung · Berg, Benedikt (privat) – Einlage","+5.000,00"]]};
+const CASE=[
+{kind:"out",title:"Ausgangsrechnung 2026-014",d:{sender:"Nordlicht Digital · Benedikt Berg",addr:"Torstraße 101, 10119 Berlin",to:"Müller GmbH · Werkstraße 4 · 10115 Berlin",no:"2026-014",date:"03.04.2026",pos:[["Webdesign Relaunch (Paketpreis)","2.000,00 €"]],net:"2.000,00 €",ust:"380,00 €",gross:"2.380,00 €",terms:"Zahlbar innerhalb von 14 Tagen."},q:"Du hast die Rechnung gerade verschickt. Wie lautet der Buchungssatz?",soll:["Forderungen aus L&L"],haben:["Erlöse 19 % USt","Umsatzsteuer 19 %"],amt:{"Forderungen aus L&L":"2.380,00 €","Erlöse 19 % USt":"2.000,00 €","Umsatzsteuer 19 %":"380,00 €"},why:"Rechnung gestellt, noch nicht bezahlt: Forderung brutto im Soll, Erlös und USt im Haben."},
+{kind:"in",title:"Eingangsrechnung Schäfer Bürobedarf",d:{sender:"Schäfer Bürobedarf GmbH",addr:"Papierweg 8 · 13509 Berlin",to:"Nordlicht Digital · Torstraße 101 · 10119 Berlin",no:"88-55102",date:"05.04.2026",pos:[["Kopierpapier 10× A4","34,00 €"],["Toner schwarz","66,00 €"]],net:"100,00 €",ust:"19,00 €",gross:"119,00 €",terms:"Zahlbar innerhalb von 14 Tagen."},q:"Die Rechnung liegt im Ordner – noch unbezahlt. Buchungssatz?",soll:["Büromaterial","Vorsteuer 19 %"],haben:["Verbindlichkeiten aus L&L"],amt:{"Büromaterial":"100,00 €","Vorsteuer 19 %":"19,00 €","Verbindlichkeiten aus L&L":"119,00 €"},why:"Aufwand + Vorsteuer im Soll, Verbindlichkeit im Haben."},
+{kind:"receipt",title:"Kassenbon Tankstelle",d:{shop:"SPRINT Tankstelle",addr:"Chausseestr. 22 · 10115 Berlin",date:"07.04.2026 · Bon 4471",items:[["Diesel 42,5 l","59,50"]],total:"59,50 €",pay:"Bar",tax:"inkl. 19 % MwSt. = 9,50 €"},q:"Tankbeleg fürs Dienstauto, bar bezahlt. Buchungssatz?",soll:["Reisekosten","Vorsteuer 19 %"],haben:["Kasse"],amt:{"Reisekosten":"50,00 €","Vorsteuer 19 %":"9,50 €","Kasse":"59,50 €"},why:"Kraftstoff fürs Dienstfahrzeug: Reisekosten + Vorsteuer an Kasse."},
+{kind:"stmt",title:"Kontoauszug April – Zeile 1",hl:0,d:STMT,q:"Zeile 1: Büromiete abgebucht. Buchungssatz?",soll:["Miete (Büroraum)"],haben:["Bank"],amt:{"Miete (Büroraum)":"800,00 €","Bank":"800,00 €"},why:"Mietaufwand im Soll, Bankabgang im Haben; i. d. R. ohne USt."},
+{kind:"stmt",title:"Kontoauszug April – Zeile 2",hl:1,d:STMT,q:"Zeile 2: Müller GmbH hat Rechnung 2026-014 bezahlt. Buchungssatz?",soll:["Bank"],haben:["Forderungen aus L&L"],amt:{"Bank":"2.380,00 €","Forderungen aus L&L":"2.380,00 €"},why:"Bankzugang im Soll, Forderung wird im Haben ausgeglichen."},
+{kind:"stmt",title:"Kontoauszug April – Zeile 3",hl:2,d:STMT,q:"Zeile 3: Telekom-Lastschrift. Buchungssatz?",soll:["Telefon & Internet","Vorsteuer 19 %"],haben:["Bank"],amt:{"Telefon & Internet":"50,00 €","Vorsteuer 19 %":"9,50 €","Bank":"59,50 €"},why:"Aufwand + Vorsteuer im Soll, Bank im Haben."},
+{kind:"stmt",title:"Kontoauszug April – Zeile 4",hl:3,d:STMT,q:"Zeile 4: Privateinlage aufs Geschäftskonto. Buchungssatz?",soll:["Bank"],haben:["Privateinlagen"],amt:{"Bank":"5.000,00 €","Privateinlagen":"5.000,00 €"},why:"Privateinlage: Bank im Soll, Privateinlagen im Haben."},
+{kind:"payroll",title:"Gehaltsabrechnung April",d:{emp:"Lena Kowalski · Minijob",month:"April 2026",gross:"556,00 €",net:"556,00 €",note:"Auszahlung per Überweisung am 30.04.2026 · Minijob"},q:"Das Gehalt wird ausgezahlt. Buchungssatz?",soll:["Löhne und Gehälter"],haben:["Bank"],amt:{"Löhne und Gehälter":"556,00 €","Bank":"556,00 €"},why:"Personalaufwand im Soll, Bank im Haben."}];
+const ROUND=10,TYPL={aktiv:"Aktivkonto",passiv:"Passivkonto",aufwand:"Aufwandskonto",ertrag:"Ertragskonto"};
+let mode="konto",fw="s03",ok=0,all=0,streak=0,answered=false,round=0,roundOk=0,mistakes=[];
+const card=document.getElementById("card"),$=id=>document.getElementById(id),rnd=a=>a[Math.floor(Math.random()*a.length)],shuffle=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(p=>p[1]),kto=k=>k[fw],eqSet=(a,b)=>a.length===b.length&&a.every(x=>b.includes(x)),curSize=()=>mode==="case"?CASE.length:ROUND;
+function dirText(k,s){if(k.typ==="aktiv")return s==="soll"?"Zunahme":"Abnahme";if(k.typ==="passiv")return s==="soll"?"Abnahme":"Zunahme";if(k.typ==="aufwand")return s==="soll"?"Aufwand":"Minderung";return s==="haben"?"Ertrag":"Minderung"}
+function score(win,frage,loesung){all++;round++;if(win){ok++;streak++;roundOk++}else{streak=0;mistakes.push({frage,loesung})}$("scOk").textContent=ok;$("scAll").textContent=all;$("scPct").textContent=all?Math.round(ok/all*100)+" %":"–";$("scStreak").textContent=streak}
+function nextBtn(){return round>=curSize()?"Auswerten →":mode==="case"?"Nächster Beleg →":"Nächste Frage →"}function proceed(){if(round>=curSize())showResult();else renderCurrent()}function showResult(){let size=curSize(),pct=Math.round(roundOk/size*100),grade=pct>=90?"🏆 Prüfungsreif!":pct>=70?"💪 Stark – fast sicher.":pct>=50?"🌱 Solide Basis – weiterdrillen.":"🔁 Erst die Module lesen, dann neue Runde.";card.innerHTML=`<div class="result"><div class="qmeta">${mode==="case"?"Monat April abgeschlossen":"Runde beendet"}</div><div class="big">${roundOk}/${size}</div><div class="grade">${grade}</div><div class="rdim">${pct} % richtig</div>${mistakes.length?`<div class="mistakes"><h4>Deine Fehler:</h4>${mistakes.map(m=>`<div class="m"><div class="mq">${m.frage}</div><div class="ma">→ ${m.loesung}</div></div>`).join("")}</div>`:`<p class="rdim" style="margin-top:14px">Fehlerfrei! 🎉</p>`}<div class="actions" style="justify-content:center"><button class="btn" id="again">Nochmal (${size} ${mode==="case"?"Belege":"Fragen"})</button><button class="btn ghost" id="homeBtn">Zur Übersicht</button></div></div>`;$("again").onclick=()=>{startRound();renderCurrent()};$("homeBtn").onclick=showHome}function startRound(){round=0;roundOk=0;mistakes=[]}function distraktoren(k,n){let same=KONTEN.filter(x=>x!==k&&kto(x)[0]===kto(k)[0]),rest=KONTEN.filter(x=>x!==k&&kto(x)[0]!==kto(k)[0]);return[...shuffle(same),...shuffle(rest)].slice(0,n)}
 
-const SAETZE = [
-  {t:"Du stellst einem Kunden eine Rechnung über 2.380 € brutto (19 % USt). Zahlungsziel: 14 Tage.",
-   betrag:"2.380,00 €", soll:"Forderungen aus L&L", haben:"Erlöse 19 % USt",
-   why:"Noch kein Geld geflossen → Forderung im Soll. Das Erlöskonto ist ein Automatikkonto und bucht die 380 € USt selbst auf das USt-Konto um."},
-  {t:"Der Kunde bezahlt die Rechnung per Überweisung: 2.380 € gehen auf dem Geschäftskonto ein.",
-   betrag:"2.380,00 €", soll:"Bank", haben:"Forderungen aus L&L",
-   why:"Zahlungseingang löst die Forderung aus: Bank (Zugang) im Soll, Forderung (Abgang) im Haben."},
-  {t:"Du kaufst Druckerpapier und Stifte für 119 € brutto und zahlst bar.",
-   betrag:"119,00 €", soll:"Büromaterial", haben:"Kasse",
-   why:"Aufwand im Soll, Kasse (Abgang) im Haben. Die 19 € Vorsteuer bucht das Automatikkonto bzw. der Steuerschlüssel mit."},
-  {t:"Die monatliche Telefon- und Internetrechnung (59,50 € brutto) wird per Lastschrift vom Geschäftskonto abgebucht.",
-   betrag:"59,50 €", soll:"Telefon & Internet", haben:"Bank",
-   why:"Aufwand im Soll, Bankabgang im Haben."},
-  {t:"Du kaufst Ware für 595 € brutto auf Ziel – die Rechnung wird erst nächsten Monat bezahlt.",
-   betrag:"595,00 €", soll:"Wareneingang 19 % VSt", haben:"Verbindlichkeiten aus L&L",
-   why:"Wareneingang (Aufwand) im Soll, Verbindlichkeit im Haben. Beim späteren Bezahlen: Verbindlichkeiten an Bank."},
-  {t:"Du überweist 5.000 € von deinem Privatkonto auf das Geschäftskonto, um die Liquidität zu sichern.",
-   betrag:"5.000,00 €", soll:"Bank", haben:"Privateinlagen",
-   why:"Einzahlung aus Privatvermögen: Bank im Soll, Privateinlage im Haben. Kein Erlös – steuerneutral!"},
-  {t:"Du hebst 500 € am Automaten ab und legst das Geld in die Bürokasse.",
-   betrag:"500,00 €", soll:"Kasse", haben:"Bank",
-   why:"Nur ein Umschichten zwischen zwei Bestandskonten: Kasse (Zugang) an Bank (Abgang)."},
-  {t:"Du nimmst 200 € aus der Kasse für private Zwecke.",
-   betrag:"200,00 €", soll:"Privatentnahmen", haben:"Kasse",
-   why:"Privatentnahme im Soll, Kassenabgang im Haben. Läuft nicht über ein Aufwandskonto – mindert den Gewinn nicht."},
-  {t:"Die Büromiete von 800 € (ohne USt) wird per Dauerauftrag vom Geschäftskonto gezahlt.",
-   betrag:"800,00 €", soll:"Miete (Büroraum)", haben:"Bank",
-   why:"Mietaufwand im Soll, Bankabgang im Haben. Vermietung ist i. d. R. umsatzsteuerbefreit → kein Steuerschlüssel."},
-  {t:"Du zahlst deinem Minijobber das Gehalt von 556 € per Überweisung.",
-   betrag:"556,00 €", soll:"Löhne und Gehälter", haben:"Bank",
-   why:"Personalaufwand im Soll, Bankabgang im Haben. Gehälter sind umsatzsteuerfrei."},
-  {t:"Du kaufst einen gebrauchten Transporter für die Firma: 11.900 € brutto, bezahlt per Überweisung.",
-   betrag:"11.900,00 €", soll:"Fuhrpark", haben:"Bank",
-   why:"Anlagevermögen (Zugang) im Soll, Bank im Haben. Die 1.900 € Vorsteuer zieht das Programm mit dem Steuerschlüssel ab."},
-  {t:"Ein Kunde zahlt eine Rechnung über 1.070 € brutto (7 % USt, z. B. für ein Buch) per Überweisung.",
-   betrag:"1.070,00 €", soll:"Bank", haben:"Erlöse 7 % USt",
-   why:"Ermäßigter Steuersatz → eigenes Erlöskonto (8300/4300). Bank im Soll, Erlös im Haben."},
-  {t:"Am Jahresende schreibst du deine Maschinen planmäßig mit 1.000 € ab.",
-   betrag:"1.000,00 €", soll:"Abschreibungen auf Sachanlagen", haben:"Maschinen",
-   why:"Abschreibung = Aufwand im Soll, Wertminderung des Aktivkontos im Haben. Es fließt kein Geld und es gibt keinen Steuerschlüssel."},
-  {t:"Du nimmst ein Darlehen über 10.000 € auf – die Bank überweist den Betrag auf dein Geschäftskonto.",
-   betrag:"10.000,00 €", soll:"Bank", haben:"Darlehen",
-   why:"Bank (Aktiv, Zunahme) im Soll, Darlehen (Passiv, Zunahme) im Haben. Eine Einnahme, aber kein Erlös – steuerneutral."},
-];
+/* Interaktives Modul 6 */
+let nStep=0,nCurrent=null;
+function initNumberModule(){let g=$("classgrid");g.innerHTML="";Object.keys(CLASSINFO["s03"]).forEach(c=>{let b=document.createElement("button");b.className="classbtn";b.innerHTML=`<code>Klasse ${c}</code><span>SKR03: ${CLASSINFO.s03[c]}</span><span>SKR04: ${CLASSINFO.s04[c]}</span>`;b.onclick=()=>classClick(c,b);g.appendChild(b)})}
+function classClick(c,b){document.querySelectorAll(".classbtn").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");let pool=KONTEN.filter(k=>k.s03[0]===c||k.s04[0]===c);let q=rnd(pool.length?pool:KONTEN);let frame=q.s03[0]===c?"s03":"s04";let number=q[frame];nCurrent={q,frame,number};$("numq").classList.add("show");$("numprompt").textContent=`Welche vollständige Kontonummer gehört zu „${q.name}" im ${frame==="s03"?"SKR03":"SKR04"}? Die Klasse ${c} gibt nur die grobe Richtung vor.`;let others=shuffle(KONTEN.filter(x=>x!==q&&x[frame][0]===number[0])).slice(0,3);if(others.length<3)others=shuffle(KONTEN.filter(x=>x!==q)).slice(0,3);$("numopts").innerHTML=shuffle([q,...others]).map(x=>`<button class="numopt" data-n="${x[frame]}">${x[frame]}</button>`).join("");$("numfb").className="numfb";$("numfb").textContent="";$("comparemini").innerHTML="";document.querySelectorAll(".numopt").forEach(o=>o.onclick=()=>numberAnswer(o,q,frame));$("numq").scrollIntoView({behavior:"smooth",block:"nearest"})}
+function numberAnswer(btn,q,frame){if($("numfb").classList.contains("show"))return;let win=btn.dataset.n===q[frame];btn.classList.add(win?"good":"bad");if(!win)document.querySelector(`.numopt[data-n="${q[frame]}"]`).classList.add("good");let f=$("numfb");f.className="numfb show";f.innerHTML=(win?"✅ Richtig!":"❌ Nicht ganz.")+` ${q.name} = <b>${q[frame]}</b> im ${frame==="s03"?"SKR03":"SKR04"}.`;$("comparemini").innerHTML=`<div><b>SKR03 ${q.s03}</b><small>${q.name}</small></div><div><b>SKR04 ${q.s04}</b><small>${q.name}</small></div>`}
 
-const COMPOUND = [
-  {t:"Du kaufst Büromaterial für 119 € brutto und zahlst bar. Buche mit ausgewiesener Vorsteuer (netto 100 € + 19 € VSt).",
-   soll:["Büromaterial","Vorsteuer 19 %"], haben:["Kasse"],
-   amt:{"Büromaterial":"100,00 €","Vorsteuer 19 %":"19,00 €","Kasse":"119,00 €"},
-   why:"Aufwand (netto) + Vorsteuer im Soll, Kasse (brutto) im Haben. So sieht der Satz ohne Automatikkonto aus."},
-  {t:"Du kaufst eine Maschine für 11.900 € brutto auf Ziel (netto 10.000 € + 1.900 € VSt).",
-   soll:["Maschinen","Vorsteuer 19 %"], haben:["Verbindlichkeiten aus L&L"],
-   amt:{"Maschinen":"10.000,00 €","Vorsteuer 19 %":"1.900,00 €","Verbindlichkeiten aus L&L":"11.900,00 €"},
-   why:"Maschinen und Vorsteuer sind Aktivkonten mit Zunahme im Soll; die Verbindlichkeit (Passiv) nimmt im Haben zu."},
-  {t:"Du verkaufst Waren für 119 € brutto – der Kunde zahlt bar (netto 100 € + 19 € USt).",
-   soll:["Kasse"], haben:["Erlöse 19 % USt","Umsatzsteuer 19 %"],
-   amt:{"Kasse":"119,00 €","Erlöse 19 % USt":"100,00 €","Umsatzsteuer 19 %":"19,00 €"},
-   why:"Hier liegt die Steuer im Haben: Kasse (brutto) im Soll, Erlös (netto) + USt im Haben. USt ist ein Passivkonto – du schuldest sie dem Finanzamt."},
-  {t:"Du stellst eine Rechnung über 2.380 € brutto (netto 2.000 € + 380 € USt).",
-   soll:["Forderungen aus L&L"], haben:["Erlöse 19 % USt","Umsatzsteuer 19 %"],
-   amt:{"Forderungen aus L&L":"2.380,00 €","Erlöse 19 % USt":"2.000,00 €","Umsatzsteuer 19 %":"380,00 €"},
-   why:"Forderung (brutto) im Soll; Erlös und Umsatzsteuer im Haben."},
-  {t:"Wareneinkauf auf Ziel: 595 € brutto (netto 500 € + 95 € VSt).",
-   soll:["Wareneingang 19 % VSt","Vorsteuer 19 %"], haben:["Verbindlichkeiten aus L&L"],
-   amt:{"Wareneingang 19 % VSt":"500,00 €","Vorsteuer 19 %":"95,00 €","Verbindlichkeiten aus L&L":"595,00 €"},
-   why:"Aufwand + Vorsteuer im Soll, Verbindlichkeit im Haben."},
-  {t:"Du kaufst einen Transporter für 11.900 € brutto und bezahlst per Überweisung (netto 10.000 € + 1.900 € VSt).",
-   soll:["Fuhrpark","Vorsteuer 19 %"], haben:["Bank"],
-   amt:{"Fuhrpark":"10.000,00 €","Vorsteuer 19 %":"1.900,00 €","Bank":"11.900,00 €"},
-   why:"Fuhrpark + Vorsteuer (beide Aktiv, Zunahme) im Soll, Bank (Abgang) im Haben."},
-  {t:"Die Telefonrechnung über 59,50 € brutto wird per Lastschrift abgebucht (netto 50 € + 9,50 € VSt).",
-   soll:["Telefon & Internet","Vorsteuer 19 %"], haben:["Bank"],
-   amt:{"Telefon & Internet":"50,00 €","Vorsteuer 19 %":"9,50 €","Bank":"59,50 €"},
-   why:"Aufwand + Vorsteuer im Soll, Bankabgang im Haben."},
-  {t:"Du verkaufst Bücher für 1.070 € brutto auf Ziel (7 % USt: netto 1.000 € + 70 € USt).",
-   soll:["Forderungen aus L&L"], haben:["Erlöse 7 % USt","Umsatzsteuer 7 %"],
-   amt:{"Forderungen aus L&L":"1.070,00 €","Erlöse 7 % USt":"1.000,00 €","Umsatzsteuer 7 %":"70,00 €"},
-   why:"Ermäßigter Satz → eigene Konten für Erlös und USt (7 %). Forderung brutto im Soll."},
-];
+/* Beleg-Renderer */
+function docHTML(s){let d=s.d;if(s.kind==="receipt")return`<div class="doc receipt"><div style="text-align:center"><b>${d.shop}</b><br>${d.addr}</div><hr>${d.date}<hr>${d.items.map(i=>`<div style="display:flex;justify-content:space-between"><span>${i[0]}</span><span>${i[1]}</span></div>`).join("")}<hr><div style="display:flex;justify-content:space-between"><b>SUMME</b><b>${d.total}</b></div><div>${d.pay}</div><hr><div style="text-align:center;font-size:.75rem">${d.tax}</div></div>`;if(s.kind==="stmt")return`<div class="doc"><div class="dh"><div><div class="dsender">${d.bank}</div><div class="daddr">Kontoauszug 04/2026</div></div><div class="dmeta">IBAN<br><b style="font-family:var(--mono)">${d.iban}</b></div></div><table class="inv"><tr><th>Datum</th><th>Buchungstext</th><th style="text-align:right">Betrag €</th></tr>${d.rows.map((r,i)=>`<tr class="${i===s.hl?"hlrow":""}"><td style="font-family:var(--mono)">${r[0]}</td><td>${r[1]}</td><td style="text-align:right;font-family:var(--mono)" class="${r[2][0]==="−"?"neg":"pos"}">${r[2]}</td></tr>`).join("")}</table><p class="terms">Die grün markierte Zeile ist zu kontieren.</p></div>`;if(s.kind==="payroll")return`<div class="doc"><div class="dsender">Nordlicht Digital</div><div class="daddr">Entgeltabrechnung · ${d.month}</div><table class="inv"><tr><td>Mitarbeiterin</td><td class="r"><b>${d.emp}</b></td></tr><tr><td>Bruttogehalt</td><td class="r">${d.gross}</td></tr><tr class="tot"><td>Auszahlung</td><td class="r">${d.net}</td></tr></table><p class="terms">${d.note}</p></div>`;return`<div class="doc"><div class="stamp">ZU KONTIEREN</div><div class="dh"><div><div class="dsender">${d.sender}</div><div class="daddr">${d.addr}</div></div><div class="dmeta"><b>RECHNUNG</b><br>Nr. ${d.no}<br>${d.date}</div></div><p class="dto">An: ${d.to}</p><table class="inv"><tr><th>Position</th><th style="text-align:right">Betrag</th></tr>${d.pos.map(p=>`<tr><td>${p[0]}</td><td class="r">${p[1]}</td></tr>`).join("")}<tr><td>Netto</td><td class="r">${d.net}</td></tr><tr><td>zzgl. 19 % USt</td><td class="r">${d.ust}</td></tr><tr class="tot"><td>Gesamt</td><td class="r">${d.gross}</td></tr></table><p class="terms">${d.terms}</p></div>`}
 
-/* ---------- Case Study: April 2026 bei „Nordlicht Digital" ---------- */
-const STMT = {bank:"Musterbank Berlin", iban:"DE12 3456 7890 1234 5678 00", rows:[
-  ["01.04.","Dauerauftrag · Büro Torstraße – Miete April","−800,00"],
-  ["10.04.","Gutschrift · Müller GmbH, Rg. 2026-014","+2.380,00"],
-  ["12.04.","Lastschrift · Telekom Deutschland","−59,50"],
-  ["15.04.","Überweisung · Berg, Benedikt (privat) – Einlage","+5.000,00"]]};
-
-const CASE = [
-  {kind:"out", title:"Ausgangsrechnung 2026-014",
-   d:{sender:"Nordlicht Digital · Benedikt Berg", addr:"Torstraße 101, 10119 Berlin", to:"Müller GmbH · Werkstraße 4 · 10115 Berlin", no:"2026-014", date:"03.04.2026",
-      pos:[["Webdesign Relaunch (Paketpreis)","2.000,00 €"]], net:"2.000,00 €", ust:"380,00 €", gross:"2.380,00 €",
-      terms:"Zahlbar innerhalb von 14 Tagen ohne Abzug auf Konto DE12 3456 7890 1234 5678 00."},
-   q:"Du hast die Rechnung gerade verschickt. Wie lautet der Buchungssatz?",
-   soll:["Forderungen aus L&L"], haben:["Erlöse 19 % USt","Umsatzsteuer 19 %"],
-   amt:{"Forderungen aus L&L":"2.380,00 €","Erlöse 19 % USt":"2.000,00 €","Umsatzsteuer 19 %":"380,00 €"},
-   why:"Rechnung gestellt, noch nicht bezahlt: Forderung (brutto) im Soll, Erlös (netto) und USt im Haben. Die USt schuldest du dem Finanzamt – Passivkonto."},
-
-  {kind:"in", title:"Eingangsrechnung Schäfer Bürobedarf",
-   d:{sender:"Schäfer Bürobedarf GmbH", addr:"Papierweg 8 · 13509 Berlin", to:"Nordlicht Digital · Torstraße 101 · 10119 Berlin", no:"88-55102", date:"05.04.2026",
-      pos:[["Kopierpapier 10× A4","34,00 €"],["Toner schwarz","66,00 €"]], net:"100,00 €", ust:"19,00 €", gross:"119,00 €",
-      terms:"Zahlbar innerhalb von 14 Tagen ohne Abzug."},
-   q:"Die Rechnung liegt im Ordner – noch unbezahlt. Buchungssatz?",
-   soll:["Büromaterial","Vorsteuer 19 %"], haben:["Verbindlichkeiten aus L&L"],
-   amt:{"Büromaterial":"100,00 €","Vorsteuer 19 %":"19,00 €","Verbindlichkeiten aus L&L":"119,00 €"},
-   why:"Kauf auf Ziel: Aufwand (netto) + Vorsteuer im Soll, Verbindlichkeit (brutto) im Haben. Beim späteren Bezahlen: Verbindlichkeiten an Bank."},
-
-  {kind:"receipt", title:"Kassenbon Tankstelle",
-   d:{shop:"SPRINT Tankstelle", addr:"Chausseestr. 22 · 10115 Berlin", date:"07.04.2026 · 08:14 Uhr · Bon 4471",
-      items:[["Diesel 42,5 l","59,50"]], total:"59,50 €", pay:"Bar", tax:"inkl. 19 % MwSt. = 9,50 €"},
-   q:"Tankbeleg fürs Dienstauto, bar bezahlt. Buchungssatz?",
-   soll:["Reisekosten","Vorsteuer 19 %"], haben:["Kasse"],
-   amt:{"Reisekosten":"50,00 €","Vorsteuer 19 %":"9,50 €","Kasse":"59,50 €"},
-   why:"Kraftstoff fürs Dienstfahrzeug läuft über Reisekosten. Bar bezahlt → Kasse im Haben. Die Vorsteuer (9,50 €) kommt aufs eigene Konto."},
-
-  {kind:"stmt", title:"Kontoauszug April – Zeile 1", hl:0, d:STMT,
-   q:"Zeile 1: Die Büromiete wurde per Dauerauftrag abgebucht. Buchungssatz?",
-   soll:["Miete (Büroraum)"], haben:["Bank"],
-   amt:{"Miete (Büroraum)":"800,00 €","Bank":"800,00 €"},
-   why:"Miete ist i. d. R. umsatzsteuerbefreit → kein Steuerschlüssel. Aufwand im Soll, Bankabgang im Haben."},
-
-  {kind:"stmt", title:"Kontoauszug April – Zeile 2", hl:1, d:STMT,
-   q:"Zeile 2: Die Müller GmbH hat Rechnung 2026-014 bezahlt. Buchungssatz?",
-   soll:["Bank"], haben:["Forderungen aus L&L"],
-   amt:{"Bank":"2.380,00 €","Forderungen aus L&L":"2.380,00 €"},
-   why:"Zahlungseingang: Bank (Zugang) im Soll, die Forderung aus Beleg 1 wird ausgebucht (Haben)."},
-
-  {kind:"stmt", title:"Kontoauszug April – Zeile 3", hl:2, d:STMT,
-   q:"Zeile 3: Telekom-Lastschrift. Buchungssatz?",
-   soll:["Telefon & Internet","Vorsteuer 19 %"], haben:["Bank"],
-   amt:{"Telefon & Internet":"50,00 €","Vorsteuer 19 %":"9,50 €","Bank":"59,50 €"},
-   why:"Aufwand (netto) + Vorsteuer im Soll, Bankabgang (brutto) im Haben."},
-
-  {kind:"stmt", title:"Kontoauszug April – Zeile 4", hl:3, d:STMT,
-   q:"Zeile 4: Du hast privat Geld aufs Geschäftskonto überwiesen. Buchungssatz?",
-   soll:["Bank"], haben:["Privateinlagen"],
-   amt:{"Bank":"5.000,00 €","Privateinlagen":"5.000,00 €"},
-   why:"Private Einzahlung: Bank im Soll, Privateinlagen im Haben. Kein Erlös – steuerneutral!"},
-
-  {kind:"payroll", title:"Gehaltsabrechnung April",
-   d:{emp:"Lena Kowalski · Minijob", month:"April 2026", gross:"556,00 €", net:"556,00 €",
-      note:"Auszahlung per Überweisung am 30.04.2026 · Minijob, pauschal versteuert"},
-   q:"Das Gehalt wird ausgezahlt. Buchungssatz?",
-   soll:["Löhne und Gehälter"], haben:["Bank"],
-   amt:{"Löhne und Gehälter":"556,00 €","Bank":"556,00 €"},
-   why:"Personalaufwand im Soll, Bank im Haben. Gehälter sind umsatzsteuerfrei."},
-];
-
-const ROUND = 10;
-const TYPL = {aktiv:"Aktivkonto", passiv:"Passivkonto", aufwand:"Aufwandskonto", ertrag:"Ertragskonto"};
-
-let mode = "konto", fw = "s03";
-let ok = 0, all = 0, streak = 0, answered = false;
-let round = 0, roundOk = 0, mistakes = [];
-
-const card = document.getElementById("card");
-const $ = id => document.getElementById(id);
-const rnd = a => a[Math.floor(Math.random() * a.length)];
-const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(p => p[1]);
-const kto = k => k[fw];
-const eqSet = (a, b) => a.length === b.length && a.every(x => b.includes(x));
-const curSize = () => mode === "case" ? CASE.length : ROUND;
-
-function dirText(k, seite) {
-  if (k.typ === "aktiv") return seite === "soll" ? "Zunahme" : "Abnahme";
-  if (k.typ === "passiv") return seite === "soll" ? "Abnahme" : "Zunahme";
-  if (k.typ === "aufwand") return seite === "soll" ? "Aufwand" : "Minderung";
-  return seite === "haben" ? "Ertrag" : "Minderung";
-}
-
-function score(win, frage, loesung) {
-  all++; round++;
-  if (win) { ok++; streak++; roundOk++; }
-  else { streak = 0; mistakes.push({frage, loesung}); }
-  $("scOk").textContent = ok;
-  $("scAll").textContent = all;
-  $("scPct").textContent = all ? Math.round(ok / all * 100) + " %" : "–";
-  $("scStreak").textContent = streak;
-}
-
-function nextBtn() {
-  return round >= curSize() ? "Auswerten →" : (mode === "case" ? "Nächster Beleg →" : "Nächste Frage →");
-}
-
-function proceed() {
-  if (round >= curSize()) showResult(); else renderCurrent();
-}
-
-function showResult() {
-  const size = curSize();
-  const pct = Math.round(roundOk / size * 100);
-  let grade;
-  if (pct >= 90) grade = "🏆 Prüfungsreif!";
-  else if (pct >= 70) grade = "💪 Stark – fast sicher.";
-  else if (pct >= 50) grade = "🌱 Solide Basis – weiterdrillen.";
-  else grade = "🔁 Erst die Module lesen, dann neue Runde.";
-  card.innerHTML = `
-    <div class="result">
-      <div class="qmeta">${mode === "case" ? "Monat April abgeschlossen" : "Runde beendet"}</div>
-      <div class="big">${roundOk}/${size}</div>
-      <div class="grade">${grade}</div>
-      <div class="rdim">${pct} % richtig</div>
-      ${mistakes.length ? `<div class="mistakes"><h4>Deine Fehler – hier lohnt sich Wiederholung:</h4>
-        ${mistakes.map(m => `<div class="m"><div class="mq">${m.frage}</div><div class="ma">→ ${m.loesung}</div></div>`).join("")}
-      </div>` : `<p class="rdim" style="margin-top:14px">Fehlerfrei! 🎉</p>`}
-      <div class="actions" style="justify-content:center">
-        <button class="btn" id="again">Nochmal (${size} ${mode === "case" ? "Belege" : "Fragen"})</button>
-        <button class="btn ghost" id="homeBtn">Zur Übersicht</button>
-      </div>
-    </div>`;
-  $("again").onclick = () => { startRound(); renderCurrent(); };
-  $("homeBtn").onclick = showHome;
-}
-
-function startRound() { round = 0; roundOk = 0; mistakes = []; }
-
-function distraktoren(k, n) {
-  const same = KONTEN.filter(x => x !== k && kto(x)[0] === kto(k)[0]);
-  const rest = KONTEN.filter(x => x !== k && kto(x)[0] !== kto(k)[0]);
-  return [...shuffle(same), ...shuffle(rest)].slice(0, n);
-}
-
-/* ---------- Beleg-Renderer ---------- */
-function docHTML(step) {
-  const d = step.d;
-  if (step.kind === "receipt") {
-    return `<div class="doc receipt">
-      <div class="rc"><b>${d.shop}</b><br>${d.addr}</div><hr>
-      <div class="rline"><span>${d.date}</span></div><hr>
-      ${d.items.map(i => `<div class="rline"><span>${i[0]}</span><span>${i[1]}</span></div>`).join("")}<hr>
-      <div class="rline"><b>SUMME</b><b>${d.total}</b></div>
-      <div class="rline"><span>${d.pay}</span><span>${d.total}</span></div><hr>
-      <div class="rc" style="font-size:.75rem">${d.tax}</div>
-    </div>`;
-  }
-  if (step.kind === "stmt") {
-    return `<div class="doc">
-      <div class="dh"><div><div class="dsender">${d.bank}</div><div class="daddr">Kontoauszug 04/2026</div></div>
-      <div class="dmeta">IBAN<br><b style="font-family:var(--mono)">${d.iban}</b></div></div>
-      <table class="inv"><tr><th>Datum</th><th>Buchungstext</th><th class="r">Betrag €</th></tr>
-      ${d.rows.map((r, i) => `<tr class="${i === step.hl ? "hlrow" : ""}"><td style="font-family:var(--mono)">${r[0]}</td><td>${r[1]}</td><td class="r ${r[2][0] === "−" ? "neg" : "pos"}">${r[2]}</td></tr>`).join("")}
-      </table>
-      <p class="terms">Die grün markierte Zeile ist zu kontieren.</p>
-    </div>`;
-  }
-  if (step.kind === "payroll") {
-    return `<div class="doc">
-      <div class="dh"><div><div class="dsender">Nordlicht Digital</div><div class="daddr">Entgeltabrechnung · ${d.month}</div></div>
-      <div class="dmeta">Mitarbeiterin<br><b>${d.emp}</b></div></div>
-      <table class="inv">
-        <tr><td>Bruttogehalt</td><td class="r">${d.gross}</td></tr>
-        <tr><td>Abzüge (Minijob, pauschal)</td><td class="r">0,00 €</td></tr>
-        <tr class="tot"><td>Auszahlung</td><td class="r">${d.net}</td></tr>
-      </table>
-      <p class="terms">${d.note}</p>
-    </div>`;
-  }
-  return `<div class="doc">
-    <div class="stamp">ZU KONTIEREN</div>
-    <div class="dh"><div><div class="dsender">${d.sender}</div><div class="daddr">${d.addr}</div></div>
-    <div class="dmeta"><b>RECHNUNG</b><br>Nr. ${d.no}<br>${d.date}</div></div>
-    <p class="dto">An: ${d.to}</p>
-    <table class="inv">
-      <tr><th>Position</th><th class="r">Betrag</th></tr>
-      ${d.pos.map(p => `<tr><td>${p[0]}</td><td class="r">${p[1]}</td></tr>`).join("")}
-      <tr><td>Netto</td><td class="r">${d.net}</td></tr>
-      <tr><td>zzgl. 19 % USt</td><td class="r">${d.ust}</td></tr>
-      <tr class="tot"><td>Gesamt</td><td class="r">${d.gross}</td></tr>
-    </table>
-    <p class="terms">${d.terms}</p>
-  </div>`;
-}
-
-/* ---------- Modus 5: Case Study ---------- */
-function qCase() {
-  answered = false;
-  const step = CASE[round];
-  const list = [...KONTEN].sort((a, b) => kto(a).localeCompare(kto(b)));
-  const opts = list.map(k => `<option value="${k.name}">${kto(k)} · ${k.name}</option>`).join("");
-  card.innerHTML = `
-    <div class="qmeta">${fw === "s03" ? "SKR03" : "SKR04"} · Case Study: Nordlicht Digital · Beleg ${round + 1}/${CASE.length}</div>
-    <div class="qtext">${step.title}</div>
-    ${docHTML(step)}
-    <div class="qsub">${step.q}</div>
-    <div class="satzrow">
-      <div class="field"><label>Soll</label>
-        <select id="selS1"></select>
-        <select id="selS2"></select>
-      </div>
-      <div class="an">an</div>
-      <div class="field"><label>Haben</label>
-        <select id="selH1"></select>
-        <select id="selH2"></select>
-      </div>
-    </div>
-    <div class="fb" id="fb"></div>
-    <div class="actions">
-      <button class="btn" id="check">Prüfen</button>
-      <button class="btn ghost" id="next" style="display:none"></button>
-    </div>`;
-  ["selS1", "selS2", "selH1", "selH2"].forEach((i, x) => {
-    $(i).innerHTML = `<option value="">– ${x % 2 === 0 ? "Konto 1" : "Konto 2 (optional)"} –</option>` + opts;
-  });
-  $("check").onclick = () => {
-    if (answered) return;
-    const sSel = [...new Set([$("selS1").value, $("selS2").value].filter(Boolean))];
-    const hSel = [...new Set([$("selH1").value, $("selH2").value].filter(Boolean))];
-    if (!sSel.length || !hSel.length) return;
-    answered = true;
-    const win = eqSet(sSel, step.soll) && eqSet(hSel, step.haben);
-    const line = n => { const k = KONTEN.find(x => x.name === n); return `${kto(k)} ${n} ${step.amt[n]}`; };
-    const satzTxt = step.soll.map(line).join(" + ") + "  an  " + step.haben.map(line).join(" + ");
-    const fb = $("fb");
-    fb.className = "fb show " + (win ? "ok" : "err");
-    fb.innerHTML = (win ? "✅ Korrekt kontiert!" : "❌ Nicht ganz.") +
-      `<div class="satz">${satzTxt}</div>
-       <div class="why">${step.why}</div>`;
-    $("next").style.display = "";
-    $("next").textContent = nextBtn();
-    score(win, step.title, satzTxt);
-  };
-  $("next").onclick = proceed;
-}
-
-/* ---------- Modus 1: Konto finden ---------- */
-function qKonto() {
-  answered = false;
-  const k = rnd(KONTEN);
-  const opts = shuffle([k, ...distraktoren(k, 3)]);
-  card.innerHTML = `
-    <div class="qmeta">${fw === "s03" ? "SKR03" : "SKR04"} · Konto finden · Frage ${round + 1}/${ROUND}</div>
-    <div class="qtext">Welche Kontonummer hat „${k.name}"?</div>
-    <div class="qsub">Kontenart: ${TYPL[k.typ]} · Nur die Nummer zählt 😉</div>
-    <div class="opts">${opts.map(o =>
-      `<button class="opt" data-nr="${kto(o)}"><span class="nr">${kto(o)}</span></button>`).join("")}
-    </div>
-    <div class="fb" id="fb"></div>
-    <div class="actions"><button class="btn ghost" id="next" style="display:none"></button></div>`;
-  $("next").textContent = nextBtn();
-  card.querySelectorAll(".opt").forEach(b => b.onclick = () => {
-    if (answered) return; answered = true;
-    const win = b.dataset.nr === kto(k);
-    b.classList.add(win ? "correct" : "wrong");
-    if (!win) card.querySelector(`[data-nr="${kto(k)}"]`).classList.add("correct");
-    const fb = $("fb");
-    fb.className = "fb show " + (win ? "ok" : "err");
-    fb.innerHTML = (win ? "✅ Richtig!" : "❌ Falsch.") +
-      ` <span class="satz">${k.name} = ${kto(k)} im ${fw === "s03" ? "SKR03" : "SKR04"} (im anderen Rahmen: ${fw === "s03" ? k.s04 : k.s03})</span>`;
-    $("next").style.display = "";
-    $("next").textContent = nextBtn();
-    score(win, `„${k.name}" im ${fw === "s03" ? "SKR03" : "SKR04"}`, kto(k));
-  });
-  $("next").onclick = proceed;
-}
-
-/* ---------- Modus 2: Buchungssatz ---------- */
-function qSatz() {
-  answered = false;
-  const s = rnd(SAETZE);
-  const list = [...KONTEN].sort((a, b) => kto(a).localeCompare(kto(b)));
-  const buildOpts = hard => list.map(k =>
-    `<option value="${k.name}">${hard ? kto(k) : kto(k) + " · " + k.name}</option>`).join("");
-  card.innerHTML = `
-    <div class="qmeta">${fw === "s03" ? "SKR03" : "SKR04"} · Buchungssatz · Frage ${round + 1}/${ROUND}</div>
-    <div class="qtext">${s.t}</div>
-    <div class="qsub">Betrag: <span class="betrag">${s.betrag}</span> · Bilde den Buchungssatz (Soll an Haben):</div>
-    <label class="hard"><input type="checkbox" id="hardMode"> Schwer: nur Kontonummern anzeigen</label>
-    <div class="satzrow">
-      <div class="field"><label>Soll (Konto)</label><select id="selSoll"></select></div>
-      <div class="an">an</div>
-      <div class="field"><label>Haben (Konto)</label><select id="selHaben"></select></div>
-    </div>
-    <div class="fb" id="fb"></div>
-    <div class="actions">
-      <button class="btn" id="check">Prüfen</button>
-      <button class="btn ghost" id="next" style="display:none"></button>
-    </div>`;
-  const fill = hard => {
-    const so = $("selSoll").value, ha = $("selHaben").value;
-    const opts = `<option value="">– wählen –</option>` + buildOpts(hard);
-    $("selSoll").innerHTML = opts;
-    $("selHaben").innerHTML = opts;
-    $("selSoll").value = so; $("selHaben").value = ha;
-  };
-  fill(false);
-  $("hardMode").onchange = e => fill(e.target.checked);
-  $("check").onclick = () => {
-    if (answered) return;
-    const so = $("selSoll").value, ha = $("selHaben").value;
-    if (!so || !ha) return;
-    answered = true;
-    const win = so === s.soll && ha === s.haben;
-    const kS = KONTEN.find(k => k.name === s.soll), kH = KONTEN.find(k => k.name === s.haben);
-    const fb = $("fb");
-    fb.className = "fb show " + (win ? "ok" : "err");
-    fb.innerHTML = (win ? "✅ Korrekt!" : "❌ Nicht ganz.") +
-      `<div class="satz">${kto(kS)} ${kS.name} &nbsp;an&nbsp; ${kto(kH)} ${kH.name} &nbsp;·&nbsp; ${s.betrag}</div>
-       <div class="why"><b>Der 4-Schritte-Weg dahin:</b>
-       <ol>
-         <li>Betroffene Konten: <b>${kS.name}</b> und <b>${kH.name}</b></li>
-         <li>Kontenart: ${kS.name} = ${TYPL[kS.typ]} · ${kH.name} = ${TYPL[kH.typ]}</li>
-         <li>Bewegung: ${kS.name} = ${dirText(kS, "soll")} · ${kH.name} = ${dirText(kH, "haben")}</li>
-         <li>Seite: ${kS.name} → <b>Soll</b> · ${kH.name} → <b>Haben</b></li>
-       </ol>${s.why}</div>`;
-    $("next").style.display = "";
-    $("next").textContent = nextBtn();
-    score(win, s.t, `${kto(kS)} ${kS.name} an ${kto(kH)} ${kH.name}`);
-  };
-  $("next").onclick = proceed;
-}
-
-/* ---------- Modus 3: Zusammengesetzte Buchungssätze ---------- */
-function qComp() {
-  answered = false;
-  const s = rnd(COMPOUND);
-  const list = [...KONTEN].sort((a, b) => kto(a).localeCompare(kto(b)));
-  const buildOpts = hard => list.map(k =>
-    `<option value="${k.name}">${hard ? kto(k) : kto(k) + " · " + k.name}</option>`).join("");
-  card.innerHTML = `
-    <div class="qmeta">${fw === "s03" ? "SKR03" : "SKR04"} · Mit Steuer (zusammengesetzt) · Frage ${round + 1}/${ROUND}</div>
-    <div class="qtext">${s.t}</div>
-    <div class="qsub">Eine Seite hat <b>zwei Konten</b> – wähle auf beiden Seiten je Konto 1 und ggf. Konto 2:</div>
-    <label class="hard"><input type="checkbox" id="hardMode"> Schwer: nur Kontonummern anzeigen</label>
-    <div class="satzrow">
-      <div class="field"><label>Soll</label>
-        <select id="selS1"></select>
-        <select id="selS2"></select>
-      </div>
-      <div class="an">an</div>
-      <div class="field"><label>Haben</label>
-        <select id="selH1"></select>
-        <select id="selH2"></select>
-      </div>
-    </div>
-    <div class="fb" id="fb"></div>
-    <div class="actions">
-      <button class="btn" id="check">Prüfen</button>
-      <button class="btn ghost" id="next" style="display:none"></button>
-    </div>`;
-  const ids = ["selS1", "selS2", "selH1", "selH2"];
-  const fill = hard => {
-    const vals = ids.map(i => $(i).value);
-    ids.forEach((i, x) => {
-      $(i).innerHTML = `<option value="">– ${x % 2 === 0 ? "Konto 1" : "Konto 2 (optional)"} –</option>` + buildOpts(hard);
-      $(i).value = vals[x];
-    });
-  };
-  fill(false);
-  $("hardMode").onchange = e => fill(e.target.checked);
-  $("check").onclick = () => {
-    if (answered) return;
-    const sSel = [...new Set([$("selS1").value, $("selS2").value].filter(Boolean))];
-    const hSel = [...new Set([$("selH1").value, $("selH2").value].filter(Boolean))];
-    if (!sSel.length || !hSel.length) return;
-    answered = true;
-    const win = eqSet(sSel, s.soll) && eqSet(hSel, s.haben);
-    const line = n => { const k = KONTEN.find(x => x.name === n); return `${kto(k)} ${n} ${s.amt[n]}`; };
-    const satzTxt = s.soll.map(line).join(" + ") + "  an  " + s.haben.map(line).join(" + ");
-    const fb = $("fb");
-    fb.className = "fb show " + (win ? "ok" : "err");
-    fb.innerHTML = (win ? "✅ Korrekt!" : "❌ Nicht ganz.") +
-      `<div class="satz">${satzTxt}</div>
-       <div class="why">${s.why}</div>`;
-    $("next").style.display = "";
-    $("next").textContent = nextBtn();
-    score(win, s.t, satzTxt);
-  };
-  $("next").onclick = proceed;
-}
-
-/* ---------- Modus 4: Mapping ---------- */
-function qMap() {
-  answered = false;
-  const k = rnd(KONTEN);
-  const dir = Math.random() < 0.5;
-  const from = dir ? k.s03 : k.s04, to = dir ? k.s04 : k.s03;
-  const fromL = dir ? "SKR03" : "SKR04", toL = dir ? "SKR04" : "SKR03";
-  const pool = KONTEN.map(x => dir ? x.s04 : x.s03).filter(n => n !== to);
-  const opts = shuffle([to, ...shuffle(pool).slice(0, 3)]);
-  card.innerHTML = `
-    <div class="qmeta">Umschlüsseln · ${fromL} → ${toL} · Frage ${round + 1}/${ROUND}</div>
-    <div class="qtext">„${k.name}" hat im ${fromL} die Nummer <span class="betrag">${from}</span>.</div>
-    <div class="qsub">Wie lautet die Nummer im ${toL}?</div>
-    <div class="opts">${opts.map(n =>
-      `<button class="opt" data-nr="${n}"><span class="nr">${n}</span></button>`).join("")}
-    </div>
-    <div class="fb" id="fb"></div>
-    <div class="actions"><button class="btn ghost" id="next" style="display:none"></button></div>`;
-  $("next").textContent = nextBtn();
-  card.querySelectorAll(".opt").forEach(b => b.onclick = () => {
-    if (answered) return; answered = true;
-    const win = b.dataset.nr === to;
-    b.classList.add(win ? "correct" : "wrong");
-    if (!win) card.querySelector(`[data-nr="${to}"]`).classList.add("correct");
-    const fb = $("fb");
-    fb.className = "fb show " + (win ? "ok" : "err");
-    fb.innerHTML = (win ? "✅ Richtig!" : "❌ Falsch.") +
-      ` <span class="satz">${k.name}: SKR03 ${k.s03} ⇄ SKR04 ${k.s04}</span>`;
-    $("next").style.display = "";
-    $("next").textContent = nextBtn();
-    score(win, `${k.name}: ${fromL} ${from} → ${toL} ?`, to);
-  });
-  $("next").onclick = proceed;
-}
-
-/* ---------- Ansichten ---------- */
-function renderCurrent() {
-  if (mode === "konto") qKonto();
-  else if (mode === "satz") qSatz();
-  else if (mode === "comp") qComp();
-  else if (mode === "case") qCase();
-  else qMap();
-}
-function showQuiz(m) {
-  mode = m;
-  $("home").style.display = "none";
-  $("quiz").style.display = "";
-  $("fwSeg").style.display = mode === "map" ? "none" : "";
-  $("fwLabel").style.display = mode === "map" ? "none" : "";
-  startRound();
-  renderCurrent();
-  window.scrollTo(0, 0);
-}
-function showHome() {
-  $("quiz").style.display = "none";
-  $("home").style.display = "";
-  window.scrollTo(0, 0);
-}
-document.querySelectorAll(".tile").forEach(t => t.onclick = () => showQuiz(t.dataset.mode));
-$("backBtn").onclick = showHome;
-$("brandHome").onclick = showHome;
-
-$("fwSeg").querySelectorAll("button").forEach(b => b.onclick = () => {
-  fw = b.dataset.fw;
-  $("fwSeg").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
-  startRound();
-  renderCurrent();
-});
-
-/* Spickzettel */
-$("cheat").querySelector("tbody").innerHTML = KONTEN.map(k =>
-  `<tr><td>${k.name}</td><td class="nr">${k.s03}</td><td class="nr">${k.s04}</td><td class="art">${TYPL[k.typ]}</td></tr>`).join("");
+function qCase(){answered=false;let s=CASE[round],list=[...KONTEN].sort((a,b)=>kto(a).localeCompare(kto(b))),opts=list.map(k=>`<option value="${k.name}">${kto(k)} · ${k.name}</option>`).join("");card.innerHTML=`<div class="qmeta">${fw==="s03"?"SKR03":"SKR04"} · Case Study: Nordlicht Digital · Beleg ${round+1}/${CASE.length}</div><div class="qtext">${s.title}</div>${docHTML(s)}<div class="qsub">${s.q}</div><div class="satzrow"><div class="field"><label>Soll</label><select id="selS1"></select><select id="selS2"></select></div><div class="an">an</div><div class="field"><label>Haben</label><select id="selH1"></select><select id="selH2"></select></div></div><div class="fb" id="fb"></div><div class="actions"><button class="btn" id="check">Prüfen</button><button class="btn ghost" id="next" style="display:none"></button></div>`;["selS1","selS2","selH1","selH2"].forEach((i,x)=>$(i).innerHTML=`<option value="">– ${x%2===0?"Konto 1":"Konto 2 (optional)"} –</option>`+opts);$("check").onclick=()=>{if(answered)return;let ss=[...new Set([$("selS1").value,$("selS2").value].filter(Boolean))],hh=[...new Set([$("selH1").value,$("selH2").value].filter(Boolean))];if(!ss.length||!hh.length)return;answered=true;let win=eqSet(ss,s.soll)&&eqSet(hh,s.haben),line=n=>{let k=KONTEN.find(x=>x.name===n);return`${kto(k)} ${n} ${s.amt[n]}`},txt=s.soll.map(line).join(" + ")+"  an  "+s.haben.map(line).join(" + ");$("fb").className="fb show "+(win?"ok":"err");$("fb").innerHTML=(win?"✅ Korrekt kontiert!":"❌ Nicht ganz.")+`<div class="satz">${txt}</div><div class="why">${s.why}</div>`;$("next").style.display="";$("next").textContent=nextBtn();score(win,s.title,txt)};$("next").onclick=proceed}
+function qKonto(){answered=false;let k=rnd(KONTEN),opts=shuffle([k,...distraktoren(k,3)]);card.innerHTML=`<div class="qmeta">${fw==="s03"?"SKR03":"SKR04"} · Konto finden · Frage ${round+1}/${ROUND}</div><div class="qtext">Welche Kontonummer hat „${k.name}"?</div><div class="qsub">Kontenart: ${TYPL[k.typ]} · Nur die Nummer zählt 😉</div><div class="opts">${opts.map(o=>`<button class="opt" data-nr="${kto(o)}"><span class="nr">${kto(o)}</span></button>`).join("")}</div><div class="fb" id="fb"></div><div class="actions"><button class="btn ghost" id="next" style="display:none"></button></div>`;$("next").textContent=nextBtn();card.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(answered)return;answered=true;let win=b.dataset.nr===kto(k);b.classList.add(win?"correct":"wrong");if(!win)card.querySelector(`[data-nr="${kto(k)}"]`).classList.add("correct");$("fb").className="fb show "+(win?"ok":"err");$("fb").innerHTML=(win?"✅ Richtig!":"❌ Falsch.")+` <span class="satz">${k.name} = ${kto(k)} im ${fw==="s03"?"SKR03":"SKR04"} (anderer Rahmen: ${fw==="s03"?k.s04:k.s03})</span>`;$("next").style.display="";$("next").textContent=nextBtn();score(win,`„${k.name}"`,kto(k))});$("next").onclick=proceed}
+function qSatz(){answered=false;let s=rnd(SAETZE),list=[...KONTEN].sort((a,b)=>kto(a).localeCompare(kto(b))),opts=list.map(k=>`<option value="${k.name}">${kto(k)} · ${k.name}</option>`).join("");card.innerHTML=`<div class="qmeta">${fw==="s03"?"SKR03":"SKR04"} · Buchungssatz · Frage ${round+1}/${ROUND}</div><div class="qtext">${s.t}</div><div class="qsub">Betrag: <span class="betrag">${s.betrag}</span> · Soll an Haben:</div><div class="satzrow"><div class="field"><label>Soll</label><select id="selSoll"><option value="">– wählen –</option>${opts}</select></div><div class="an">an</div><div class="field"><label>Haben</label><select id="selHaben"><option value="">– wählen –</option>${opts}</select></div></div><div class="fb" id="fb"></div><div class="actions"><button class="btn" id="check">Prüfen</button><button class="btn ghost" id="next" style="display:none"></button></div>`;$("check").onclick=()=>{if(answered)return;let so=$("selSoll").value,ha=$("selHaben").value;if(!so||!ha)return;answered=true;let win=so===s.soll&&ha===s.haben,kS=KONTEN.find(k=>k.name===s.soll),kH=KONTEN.find(k=>k.name===s.haben);$("fb").className="fb show "+(win?"ok":"err");$("fb").innerHTML=(win?"✅ Korrekt!":"❌ Nicht ganz.")+`<div class="satz">${kto(kS)} ${kS.name} an ${kto(kH)} ${kH.name} · ${s.betrag}</div><div class="why">${s.why}</div>`;$("next").style.display="";$("next").textContent=nextBtn();score(win,s.t,`${kto(kS)} ${kS.name} an ${kto(kH)} ${kH.name}`)};$("next").onclick=proceed}
+function qComp(){answered=false;let s=rnd(COMPOUND),list=[...KONTEN].sort((a,b)=>kto(a).localeCompare(kto(b))),opts=list.map(k=>`<option value="${k.name}">${kto(k)} · ${k.name}</option>`).join("");card.innerHTML=`<div class="qmeta">${fw==="s03"?"SKR03":"SKR04"} · Mit Steuer · Frage ${round+1}/${ROUND}</div><div class="qtext">${s.t}</div><div class="satzrow"><div class="field"><label>Soll</label><select id="selS1"><option>– Konto 1 –</option>${opts}</select><select id="selS2"><option>– optional –</option>${opts}</select></div><div class="an">an</div><div class="field"><label>Haben</label><select id="selH1"><option>– Konto 1 –</option>${opts}</select><select id="selH2"><option>– optional –</option>${opts}</select></div></div><div class="fb" id="fb"></div><div class="actions"><button class="btn" id="check">Prüfen</button><button class="btn ghost" id="next" style="display:none"></button></div>`;$("check").onclick=()=>{if(answered)return;let ss=[$("selS1").value,$("selS2").value].filter(x=>x&&!x.startsWith("–")),hh=[$("selH1").value,$("selH2").value].filter(x=>x&&!x.startsWith("–"));if(!ss.length||!hh.length)return;answered=true;let win=eqSet(ss,s.soll)&&eqSet(hh,s.haben),line=n=>{let k=KONTEN.find(x=>x.name===n);return`${kto(k)} ${n} ${s.amt[n]}`},txt=s.soll.map(line).join(" + ")+" an "+s.haben.map(line).join(" + ");$("fb").className="fb show "+(win?"ok":"err");$("fb").innerHTML=(win?"✅ Korrekt!":"❌ Nicht ganz.")+`<div class="satz">${txt}</div><div class="why">${s.why}</div>`;$("next").style.display="";$("next").textContent=nextBtn();score(win,s.t,txt)};$("next").onclick=proceed}
+function qMap(){answered=false;let k=rnd(KONTEN),dir=Math.random()<.5,from=dir?k.s03:k.s04,to=dir?k.s04:k.s03,fromL=dir?"SKR03":"SKR04",pool=KONTEN.map(x=>dir?x.s04:x.s03).filter(n=>n!==to),opts=shuffle([to,...shuffle(pool).slice(0,3)]);card.innerHTML=`<div class="qmeta">Umschlüsseln · ${fromL} → ${dir?"SKR04":"SKR03"} · Frage ${round+1}/${ROUND}</div><div class="qtext">„${k.name}" hat im ${fromL} die Nummer <span class="betrag">${from}</span>.</div><div class="qsub">Wie lautet die Nummer im anderen Rahmen?</div><div class="opts">${opts.map(n=>`<button class="opt" data-nr="${n}"><span class="nr">${n}</span></button>`).join("")}</div><div class="fb" id="fb"></div><div class="actions"><button class="btn ghost" id="next" style="display:none"></button></div>`;$("next").textContent=nextBtn();card.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{if(answered)return;answered=true;let win=b.dataset.nr===to;b.classList.add(win?"correct":"wrong");if(!win)card.querySelector(`[data-nr="${to}"]`).classList.add("correct");$("fb").className="fb show "+(win?"ok":"err");$("fb").innerHTML=(win?"✅ Richtig!":"❌ Falsch.")+` <span class="satz">${k.name}: SKR03 ${k.s03} ⇄ SKR04 ${k.s04}</span>`;$("next").style.display="";$("next").textContent=nextBtn();score(win,`${k.name}: ${fromL} ${from}`,to)});$("next").onclick=proceed}
+function renderCurrent(){if(mode==="konto")qKonto();else if(mode==="satz")qSatz();else if(mode==="comp")qComp();else if(mode==="case")qCase();else qMap()}
+function showQuiz(m){mode=m;$("home").style.display="none";$("quiz").style.display="";$("fwSeg").style.display=mode==="map"?"none":"";$("fwLabel").style.display=mode==="map"?"none":"";startRound();renderCurrent();window.scrollTo(0,0)}function showHome(){$("quiz").style.display="none";$("home").style.display="";window.scrollTo(0,0)}document.querySelectorAll(".tile").forEach(t=>t.onclick=()=>showQuiz(t.dataset.mode));$("backBtn").onclick=showHome;$("brandHome").onclick=showHome;$("fwSeg").querySelectorAll("button").forEach(b=>b.onclick=()=>{fw=b.dataset.fw;$("fwSeg").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));startRound();renderCurrent()});$("cheat").querySelector("tbody").innerHTML=KONTEN.map(k=>`<tr><td>${k.name}</td><td class="nr">${k.s03}</td><td class="nr">${k.s04}</td><td class="art">${TYPL[k.typ]}</td></tr>`).join("");initNumberModule();
 </script>
 </body>
 </html>
