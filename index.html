@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKR03 / SKR04 Kontierungstrainer</title>
+<style>
+  :root{
+    --bg:#0e1117; --card:#171c26; --card2:#1e2532; --line:#2a3242;
+    --txt:#e8ecf3; --dim:#9aa5b5; --accent:#4f8ef7; --accent2:#7c5cf0;
+    --ok:#2fbf71; --okbg:rgba(47,191,113,.12); --err:#e5534b; --errbg:rgba(229,83,75,.12);
+    --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;min-height:100vh;padding:24px 16px 80px}
+  .wrap{max-width:860px;margin:0 auto}
+  h1{font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
+  h1 .tag{font-family:var(--mono);font-size:.8rem;color:var(--accent);vertical-align:middle;margin-left:8px}
+  .sub{color:var(--dim);font-size:.9rem;margin-top:4px}
+  /* Toggle + Tabs */
+  .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:20px 0 14px}
+  .seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .seg button{background:none;border:none;color:var(--dim);padding:8px 16px;font-size:.85rem;cursor:pointer;font-weight:600;transition:.15s}
+  .seg button.on{background:var(--accent);color:#fff}
+  .seg button:not(.on):hover{color:var(--txt)}
+  .label{font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-right:2px}
+  /* Score */
+  .score{display:flex;gap:18px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;margin-bottom:18px;font-size:.85rem;color:var(--dim);flex-wrap:wrap}
+  .score b{color:var(--txt);font-family:var(--mono)}
+  .score .streak b{color:#f5a623}
+  /* Card */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+  .qmeta{font-size:.75rem;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px}
+  .qtext{font-size:1.15rem;font-weight:600;margin-bottom:6px}
+  .qsub{color:var(--dim);font-size:.9rem;margin-bottom:18px}
+  .betrag{font-family:var(--mono);background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:2px 10px;color:#ffd479}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:560px){.opts{grid-template-columns:1fr}}
+  .opt{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;text-align:left;color:var(--txt);font-size:.95rem;transition:.12s;display:flex;gap:10px;align-items:baseline}
+  .opt:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .opt .nr{font-family:var(--mono);color:var(--accent);font-weight:700}
+  .opt.correct{border-color:var(--ok);background:var(--okbg)}
+  .opt.wrong{border-color:var(--err);background:var(--errbg)}
+  .opt:disabled{cursor:default;opacity:.85}
+  /* Buchungssatz */
+  .satzrow{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px}
+  .field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:220px}
+  .field label{font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+  select{background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:11px 12px;font-size:.9rem;font-family:var(--mono);width:100%}
+  select:focus{outline:none;border-color:var(--accent)}
+  .an{font-family:var(--mono);color:var(--dim);padding-bottom:12px;font-weight:700}
+  /* Feedback */
+  .fb{margin-top:16px;border-radius:10px;padding:14px 16px;font-size:.9rem;display:none}
+  .fb.show{display:block}
+  .fb.ok{background:var(--okbg);border:1px solid var(--ok)}
+  .fb.err{background:var(--errbg);border:1px solid var(--err)}
+  .fb .satz{font-family:var(--mono);margin-top:6px;color:var(--txt)}
+  .fb .why{color:var(--dim);margin-top:6px}
+  /* Buttons */
+  .actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+  .btn{background:var(--accent);border:none;color:#fff;border-radius:10px;padding:11px 22px;font-size:.9rem;font-weight:700;cursor:pointer;transition:.15s}
+  .btn:hover{filter:brightness(1.12)}
+  .btn.ghost{background:none;border:1px solid var(--line);color:var(--dim)}
+  .btn.ghost:hover{color:var(--txt);border-color:var(--dim)}
+  /* Cheatsheet */
+  details{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  summary{cursor:pointer;padding:14px 18px;font-weight:700;font-size:.95rem;list-style:none}
+  summary::before{content:"\25B8 ";color:var(--accent)}
+  details[open] summary::before{content:"\25BE "}
+  table{width:100%;border-collapse:collapse;font-size:.85rem}
+  th,td{padding:8px 18px;text-align:left;border-top:1px solid var(--line)}
+  th{color:var(--dim);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
+  td.nr{font-family:var(--mono);color:var(--accent)}
+  td.art{color:var(--dim);font-size:.78rem}
+  .rules{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;font-size:.88rem;color:var(--dim)}
+  .rules h2{font-size:.95rem;color:var(--txt);margin-bottom:8px}
+  .rules li{margin:5px 0 5px 18px}
+  .rules code{font-family:var(--mono);color:#ffd479;font-size:.82rem}
+  kbd{font-family:var(--mono);background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.75rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Kontierungstrainer <span class="tag">SKR03 ⇄ SKR04</span></h1>
+  <p class="sub">Übe Kontonummern, Buchungssätze und das Umschlüsseln zwischen beiden DATEV-Kontenrahmen.</p>
+
+  <div class="bar">
+    <span class="label">Modus</span>
+    <div class="seg" id="modeSeg">
+      <button data-mode="konto" class="on">Konto finden</button>
+      <button data-mode="satz">Buchungssatz</button>
+      <button data-mode="map">SKR03 ⇄ SKR04</button>
+    </div>
+    <span class="label" id="fwLabel">Rahmen</span>
+    <div class="seg" id="fwSeg">
+      <button data-fw="s03" class="on">SKR03</button>
+      <button data-fw="s04">SKR04</button>
+    </div>
+  </div>
+
+  <div class="score">
+    <span>Richtig: <b id="scOk">0</b></span>
+    <span>Gesamt: <b id="scAll">0</b></span>
+    <span>Quote: <b id="scPct">–</b></span>
+    <span class="streak">Serie: <b id="scStreak">0</b> 🔥</span>
+  </div>
+
+  <div class="card" id="card"></div>
+
+  <details>
+    <summary>Spickzettel: die 18 wichtigsten Konten</summary>
+    <table id="cheat">
+      <thead><tr><th>Konto</th><th>SKR03</th><th>SKR04</th><th>Art</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </details>
+
+  <div class="rules">
+    <h2>Grundregeln</h2>
+    <ul>
+      <li>Jeder Buchungssatz lautet <code>Soll an Haben</code> – immer mindestens zwei Konten, Betrag links wie rechts gleich.</li>
+      <li><b>Bestandskonten</b> (Bank, Kasse, Forderungen …): Zugang im Soll = mehr Vermögen, Abgang im Haben.</li>
+      <li><b>Aufwandskonten</b> werden im Soll bebucht, <b>Ertragskonten</b> im Haben.</li>
+      <li>Erlöskonten wie <code>8400/4400</code> sind <b>Automatikkonten</b>: Das Programm bucht die USt selbst auf <code>1776</code> (SKR03) bzw. <code>3806</code> (SKR04) um. Du buchst den Bruttobetrag nur „Bank an Erlöse".</li>
+      <li>Merke die Falle: <code>1200</code> ist im SKR03 die <b>Bank</b>, im SKR04 die <b>Forderungen</b> – und <code>1600</code> ist im SKR03 eine <b>Verbindlichkeit</b>, im SKR04 die <b>Kasse</b>.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+const KONTEN = [
+  {name:"Kasse", s03:"1000", s04:"1600", art:"Bestand"},
+  {name:"Bank", s03:"1200", s04:"1800", art:"Bestand"},
+  {name:"Forderungen aus L&L", s03:"1400", s04:"1200", art:"Bestand"},
+  {name:"Verbindlichkeiten aus L&L", s03:"1600", s04:"3300", art:"Bestand"},
+  {name:"Vorsteuer 19 %", s03:"1576", s04:"1406", art:"Bestand"},
+  {name:"Umsatzsteuer 19 %", s03:"1776", s04:"3806", art:"Bestand"},
+  {name:"Privateinlagen", s03:"1800", s04:"2180", art:"Eigenkapital"},
+  {name:"Privatentnahmen", s03:"1880", s04:"2100", art:"Eigenkapital"},
+  {name:"Maschinen", s03:"0210", s04:"0440", art:"Anlage"},
+  {name:"Fuhrpark", s03:"0320", s04:"0520", art:"Anlage"},
+  {name:"Wareneingang 19 % VSt", s03:"3400", s04:"5400", art:"Aufwand"},
+  {name:"Löhne und Gehälter", s03:"4100", s04:"6020", art:"Aufwand"},
+  {name:"Miete (Büroraum)", s03:"4120", s04:"6310", art:"Aufwand"},
+  {name:"Reisekosten", s03:"4660", s04:"4670", art:"Aufwand"},
+  {name:"Telefon & Internet", s03:"4910", s04:"6805", art:"Aufwand"},
+  {name:"Büromaterial", s03:"4930", s04:"6815", art:"Aufwand"},
+  {name:"Erlöse 19 % USt", s03:"8400", s04:"4400", art:"Ertrag"},
+  {name:"Erlöse 7 % USt", s03:"8300", s04:"4300", art:"Ertrag"},
+];
+
+const SAETZE = [
+  {t:"Du stellst einem Kunden eine Rechnung über 2.380 € brutto (19 % USt). Zahlungsziel: 14 Tage.",
+   betrag:"2.380,00 €", soll:"Forderungen aus L&L", haben:"Erlöse 19 % USt",
+   why:"Noch kein Geld geflossen → Forderung im Soll. Das Erlöskonto ist ein Automatikkonto und bucht die 380 € USt selbst auf das USt-Konto um."},
+  {t:"Der Kunde bezahlt die Rechnung per Überweisung: 2.380 € gehen auf dem Geschäftskonto ein.",
+   betrag:"2.380,00 €", soll:"Bank", haben:"Forderungen aus L&L",
+   why:"Zahlungseingang löst die Forderung aus: Bank (Zugang) im Soll, Forderung (Abgang) im Haben."},
+  {t:"Du kaufst Druckerpapier und Stifte für 119 € brutto und zahlst bar.",
+   betrag:"119,00 €", soll:"Büromaterial", haben:"Kasse",
+   why:"Aufwand im Soll, Kasse (Abgang) im Haben. Die 19 € Vorsteuer bucht das Automatikkonto bzw. der Steuerschlüssel mit."},
+  {t:"Die monatliche Telefon- und Internetrechnung (59,50 € brutto) wird per Lastschrift vom Geschäftskonto abgebucht.",
+   betrag:"59,50 €", soll:"Telefon & Internet", haben:"Bank",
+   why:"Aufwand im Soll, Bankabgang im Haben."},
+  {t:"Du kaufst Ware für 595 € brutto auf Ziel – die Rechnung wird erst nächsten Monat bezahlt.",
+   betrag:"595,00 €", soll:"Wareneingang 19 % VSt", haben:"Verbindlichkeiten aus L&L",
+   why:"Wareneingang (Aufwand) im Soll, Verbindlichkeit im Haben. Beim späteren Bezahlen: Verbindlichkeiten an Bank."},
+  {t:"Du überweist 5.000 € von deinem Privatkonto auf das Geschäftskonto, um die Liquidität zu sichern.",
+   betrag:"5.000,00 €", soll:"Bank", haben:"Privateinlagen",
+   why:"Einzahlung aus Privatvermögen: Bank im Soll, Privateinlage im Haben. Kein Erlös – steuerneutral!"},
+  {t:"Du hebst 500 € am Automaten ab und legst das Geld in die Bürokasse.",
+   betrag:"500,00 €", soll:"Kasse", haben:"Bank",
+   why:"Nur ein Umschichten zwischen zwei Bestandskonten: Kasse (Zugang) an Bank (Abgang)."},
+  {t:"Du nimmst 200 € aus der Kasse für private Zwecke.",
+   betrag:"200,00 €", soll:"Privatentnahmen", haben:"Kasse",
+   why:"Privatentnahme im Soll, Kassenabgang im Haben. Läuft nicht über ein Aufwandskonto – mindert den Gewinn nicht."},
+  {t:"Die Büromiete von 800 € (ohne USt) wird per Dauerauftrag vom Geschäftskonto gezahlt.",
+   betrag:"800,00 €", soll:"Miete (Büroraum)", haben:"Bank",
+   why:"Mietaufwand im Soll, Bankabgang im Haben. Vermietung ist i. d. R. umsatzsteuerbefreit → kein Steuerschlüssel."},
+  {t:"Du zahlst deinem Minijobber das Gehalt von 556 € per Überweisung.",
+   betrag:"556,00 €", soll:"Löhne und Gehälter", haben:"Bank",
+   why:"Personalaufwand im Soll, Bankabgang im Haben. Gehälter sind umsatzsteuerfrei."},
+  {t:"Du kaufst einen gebrauchten Transporter für die Firma: 11.900 € brutto, bezahlt per Überweisung.",
+   betrag:"11.900,00 €", soll:"Fuhrpark", haben:"Bank",
+   why:"Anlagevermögen (Zugang) im Soll, Bank im Haben. Die 1.900 € Vorsteuer zieht das Programm mit dem Steuerschlüssel ab."},
+  {t:"Ein Kunde zahlt eine Rechnung über 1.070 € brutto (7 % USt, z. B. für ein Buch) per Überweisung.",
+   betrag:"1.070,00 €", soll:"Bank", haben:"Erlöse 7 % USt",
+   why:"Ermäßigter Steuersatz → eigenes Erlöskonto (8300/4300). Bank im Soll, Erlös im Haben."},
+];
+
+let mode = "konto", fw = "s03";
+let ok = 0, all = 0, streak = 0, answered = false, cur = null;
+
+const card = document.getElementById("card");
+const $ = id => document.getElementById(id);
+const rnd = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(p => p[1]);
+const kto = k => k[fw];
+const fmt = k => kto(k) + " · " + k.name;
+
+function score(win) {
+  all++;
+  if (win) { ok++; streak++; } else streak = 0;
+  $("scOk").textContent = ok;
+  $("scAll").textContent = all;
+  $("scPct").textContent = all ? Math.round(ok / all * 100) + " %" : "–";
+  $("scStreak").textContent = streak;
+}
+
+/* ---------- Modus 1: Konto finden ---------- */
+function qKonto() {
+  answered = false;
+  const k = rnd(KONTEN);
+  const others = shuffle(KONTEN.filter(x => x !== k)).slice(0, 3);
+  const opts = shuffle([k, ...others]);
+  cur = k;
+  card.innerHTML = `
+    <div class="qmeta">${fw === "s03" ? "SKR03" : "SKR04"} · Konto finden</div>
+    <div class="qtext">Welche Kontonummer hat „${k.name}"?</div>
+    <div class="qsub">Kontenart: ${k.art}konto</div>
+    <div class="opts">${opts.map(o =>
+      `<button class="opt" data-nr="${kto(o)}"><span class="nr">${kto(o)}</span><span>${o.name}</span></button>`).join("")}
+    </div>
+    <div class="fb" id="fb"></div>
+    <div class="actions"><button class="btn ghost" id="next" style="display:none">Nächste Frage →</button></div>`;
+  card.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    if (answered) return; answered = true;
+    const win = b.dataset.nr === kto(k);
+    b.classList.add(win ? "correct" : "wrong");
+    if (!win) card.querySelector(`[data-nr="${kto(k)}"]`).classList.add("correct");
+    const fb = $("fb");
+    fb.className = "fb show " + (win ? "ok" : "err");
+    fb.innerHTML = (win ? "✅ Richtig!" : "❌ Falsch.") +
+      ` <span class="satz">${k.name} = ${kto(k)} im ${fw === "s03" ? "SKR03" : "SKR04"} (im anderen Rahmen: ${fw === "s03" ? k.s04 : k.s03})</span>`;
+    $("next").style.display = "";
+    score(win);
+  });
+  $("next").onclick = qKonto;
+}
+
+/* ---------- Modus 2: Buchungssatz ---------- */
+function qSatz() {
+  answered = false;
+  const s = rnd(SAETZE);
+  cur = s;
+  const list = [...KONTEN].sort((a, b) => kto(a).localeCompare(kto(b)));
+  const opts = list.map(k => `<option value="${k.name}">${fmt(k)}</option>`).join("");
+  card.innerHTML = `
+    <div class="qmeta">${fw === "s03" ? "SKR03" : "SKR04"} · Buchungssatz bilden</div>
+    <div class="qtext">${s.t}</div>
+    <div class="qsub">Betrag: <span class="betrag">${s.betrag}</span> · Bilde den Buchungssatz (Soll an Haben):</div>
+    <div class="satzrow">
+      <div class="field"><label>Soll (Konto)</label><select id="selSoll"><option value="">– wählen –</option>${opts}</select></div>
+      <div class="an">an</div>
+      <div class="field"><label>Haben (Konto)</label><select id="selHaben"><option value="">– wählen –</option>${opts}</select></div>
+    </div>
+    <div class="fb" id="fb"></div>
+    <div class="actions">
+      <button class="btn" id="check">Prüfen</button>
+      <button class="btn ghost" id="next" style="display:none">Nächster Fall →</button>
+    </div>`;
+  $("check").onclick = () => {
+    if (answered) return;
+    const so = $("selSoll").value, ha = $("selHaben").value;
+    if (!so || !ha) return;
+    answered = true;
+    const win = so === s.soll && ha === s.haben;
+    const kS = KONTEN.find(k => k.name === s.soll), kH = KONTEN.find(k => k.name === s.haben);
+    const fb = $("fb");
+    fb.className = "fb show " + (win ? "ok" : "err");
+    fb.innerHTML = (win ? "✅ Korrekt!" : "❌ Nicht ganz.") +
+      `<div class="satz">${kto(kS)} ${kS.name} &nbsp;an&nbsp; ${kto(kH)} ${kH.name} &nbsp;·&nbsp; ${s.betrag}</div>
+       <div class="why">${s.why}</div>`;
+    $("next").style.display = "";
+    score(win);
+  };
+  $("next").onclick = qSatz;
+}
+
+/* ---------- Modus 3: Mapping ---------- */
+function qMap() {
+  answered = false;
+  const k = rnd(KONTEN);
+  const dir = Math.random() < 0.5; // true: 03→04
+  const from = dir ? k.s03 : k.s04, to = dir ? k.s04 : k.s03;
+  const fromL = dir ? "SKR03" : "SKR04", toL = dir ? "SKR04" : "SKR03";
+  const pool = KONTEN.map(x => dir ? x.s04 : x.s03).filter(n => n !== to);
+  const opts = shuffle([to, ...shuffle(pool).slice(0, 3)]);
+  card.innerHTML = `
+    <div class="qmeta">Umschlüsseln · ${fromL} → ${toL}</div>
+    <div class="qtext">„${k.name}" hat im ${fromL} die Nummer <span class="betrag">${from}</span>.</div>
+    <div class="qsub">Wie lautet die Nummer im ${toL}?</div>
+    <div class="opts">${opts.map(n =>
+      `<button class="opt" data-nr="${n}"><span class="nr">${n}</span></button>`).join("")}
+    </div>
+    <div class="fb" id="fb"></div>
+    <div class="actions"><button class="btn ghost" id="next" style="display:none">Nächste Frage →</button></div>`;
+  card.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    if (answered) return; answered = true;
+    const win = b.dataset.nr === to;
+    b.classList.add(win ? "correct" : "wrong");
+    if (!win) card.querySelector(`[data-nr="${to}"]`).classList.add("correct");
+    const fb = $("fb");
+    fb.className = "fb show " + (win ? "ok" : "err");
+    fb.innerHTML = (win ? "✅ Richtig!" : "❌ Falsch.") +
+      ` <span class="satz">${k.name}: SKR03 ${k.s03} ⇄ SKR04 ${k.s04}</span>`;
+    $("next").style.display = "";
+    score(win);
+  });
+  $("next").onclick = qMap;
+}
+
+/* ---------- Steuerung ---------- */
+function render() {
+  $("fwSeg").style.display = mode === "map" ? "none" : "";
+  $("fwLabel").style.display = mode === "map" ? "none" : "";
+  if (mode === "konto") qKonto();
+  else if (mode === "satz") qSatz();
+  else qMap();
+}
+$("modeSeg").querySelectorAll("button").forEach(b => b.onclick = () => {
+  mode = b.dataset.mode;
+  $("modeSeg").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+  render();
+});
+$("fwSeg").querySelectorAll("button").forEach(b => b.onclick = () => {
+  fw = b.dataset.fw;
+  $("fwSeg").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+  render();
+});
+
+/* Spickzettel */
+$("cheat").querySelector("tbody").innerHTML = KONTEN.map(k =>
+  `<tr><td>${k.name}</td><td class="nr">${k.s03}</td><td class="nr">${k.s04}</td><td class="art">${k.art}</td></tr>`).join("");
+
+render();
+</script>
+</body>
+</html>
