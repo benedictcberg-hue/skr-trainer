@@ -64,6 +64,9 @@
   .btn.ghost:hover{color:var(--txt);border-color:var(--dim)}
   /* Cheatsheet */
   details{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  details.learn{margin-top:20px}
+  details.learn > summary{font-size:1.05rem;padding:16px 20px;background:linear-gradient(135deg,rgba(79,142,247,.12),rgba(124,92,240,.10))}
+  details.learn > summary::after{content:"Lies mich zuerst";float:right;font-size:.7rem;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-top:3px}
   summary{cursor:pointer;padding:14px 18px;font-weight:700;font-size:.95rem;list-style:none}
   summary::before{content:"\25B8 ";color:var(--accent)}
   details[open] summary::before{content:"\25BE "}
@@ -72,6 +75,30 @@
   th{color:var(--dim);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
   td.nr{font-family:var(--mono);color:var(--accent)}
   td.art{color:var(--dim);font-size:.78rem}
+  /* Learn section */
+  .learn{padding:6px 20px 22px;font-size:.9rem;color:var(--txt)}
+  .learn h3{font-size:.95rem;margin:20px 0 8px;color:var(--accent)}
+  .learn p{margin:6px 0;color:var(--dim)}
+  .learn p b{color:var(--txt)}
+  .learn ul{margin:6px 0 6px 4px;color:var(--dim)}
+  .learn li{margin:4px 0 4px 16px}
+  .learn li b{color:var(--txt)}
+  .learn code{font-family:var(--mono);color:#ffd479;font-size:.82rem}
+  .lrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  @media(max-width:560px){.lrow{grid-template-columns:1fr}}
+  .lbox{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  .lbox h4{font-size:.85rem;margin-bottom:6px}
+  .lbox.s03 h4{color:var(--accent)}
+  .lbox.s04 h4{color:var(--accent2)}
+  .lbox p{font-size:.82rem;color:var(--dim)}
+  .lbox .cls{font-family:var(--mono);font-size:.78rem;color:var(--txt);display:block;margin:2px 0}
+  .trap{background:var(--errbg);border:1px solid var(--err);border-radius:10px;padding:12px 14px;margin-top:10px;font-size:.85rem}
+  .trap b{color:var(--err)}
+  .path{counter-reset:step;margin-top:8px}
+  .path .step{display:flex;gap:12px;margin:10px 0;align-items:flex-start}
+  .path .step::before{counter-increment:step;content:counter(step);background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;min-width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono)}
+  .path .step p{margin:0;font-size:.85rem}
+  .path .step p b{color:var(--txt)}
   .rules{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;font-size:.88rem;color:var(--dim)}
   .rules h2{font-size:.95rem;color:var(--txt);margin-bottom:8px}
   .rules li{margin:5px 0 5px 18px}
@@ -83,6 +110,84 @@
 <div class="wrap">
   <h1>Kontierungstrainer <span class="tag">SKR03 ⇄ SKR04</span></h1>
   <p class="sub">Übe Kontonummern, Buchungssätze und das Umschlüsseln zwischen beiden DATEV-Kontenrahmen.</p>
+
+  <details class="learn">
+    <summary>Einführung: Alles, was du wissen musst</summary>
+    <div class="learn">
+
+      <h3>Was ist ein Kontenrahmen?</h3>
+      <p>Ein <b>Kontenrahmen</b> ist die standardisierte Gesamtliste aller Buchungskonten – sozusagen der Katalog, aus dem dein Betrieb seinen eigenen Kontenplan ableitet. In Deutschland nutzen fast alle Steuerkanzleien die <b>DATEV-Standardkontenrahmen SKR03 und SKR04</b>. Beide bilden dieselben Geschäftsvorfälle ab und führen zum identischen Jahresabschluss – sie unterscheiden sich nur in der Sortierung.</p>
+      <p><b>Kontieren</b> heißt dann: jeden Beleg (Rechnung, Kassenzettel, Kontoauszug) dem richtigen Konto aus diesem Rahmen zuweisen.</p>
+
+      <h3>SKR03 vs. SKR04 – derselbe Inhalt, zwei Sortierungen</h3>
+      <div class="lrow">
+        <div class="lbox s03">
+          <h4>SKR03 · Prozessgliederung</h4>
+          <p>Sortiert nach dem betrieblichen Ablauf. Typisch für kleine Betriebe, Freiberufler, EÜR.</p>
+          <span class="cls">0 · Anlage- &amp; Kapitalkonten</span>
+          <span class="cls">1 · Finanz- &amp; Privatkonten</span>
+          <span class="cls">2 · Abgrenzungskonten</span>
+          <span class="cls">3 · Wareneingang / Bestände</span>
+          <span class="cls">4 · Betriebliche Aufwendungen</span>
+          <span class="cls">8 · Erlöse</span>
+        </div>
+        <div class="lbox s04">
+          <h4>SKR04 · Abschlussgliederung</h4>
+          <p>Sortiert nach Bilanz &amp; GuV (§ 266 HGB). Typisch für GmbH, UG und bilanzierende Unternehmen.</p>
+          <span class="cls">0 · Anlagevermögen</span>
+          <span class="cls">1 · Umlaufvermögen</span>
+          <span class="cls">2 · Eigenkapital</span>
+          <span class="cls">3 · Fremdkapital</span>
+          <span class="cls">4 · Betriebliche Erträge</span>
+          <span class="cls">5–7 · Betriebliche Aufwendungen</span>
+        </div>
+      </div>
+      <p>Dasselbe Konto hat je nach Rahmen eine andere Nummer – z. B. Bank: <code>1200</code> im SKR03, <code>1800</code> im SKR04. Fachlich ist keiner besser; wer bei einer Kanzlei ist, übernimmt deren Rahmen. Einmal gewählt, bleibt man dabei – ein Wechsel ist aufwändig.</p>
+
+      <h3>Die vier Kontenarten</h3>
+      <ul>
+        <li><b>Bestandskonten</b> (aktiv): Kasse, Bank, Forderungen, Maschinen – zeigen, was du <i>hast</i>.</li>
+        <li><b>Bestandskonten</b> (passiv): Verbindlichkeiten, Eigenkapital – zeigen, <i>wem es gehört</i>.</li>
+        <li><b>Aufwandskonten</b>: Miete, Büromaterial, Löhne – Geld, das <i>rausgeht</i>. Werden im <b>Soll</b> bebucht.</li>
+        <li><b>Ertragskonten</b>: Erlöse – Geld, das <i>reinkommt</i>. Werden im <b>Haben</b> bebucht.</li>
+      </ul>
+
+      <h3>Soll an Haben – das Grundprinzip</h3>
+      <p>Die <b>doppelte Buchführung</b> bucht jeden Vorgang zweimal: einmal im <b>Soll</b>, einmal im <b>Haben</b>. Der Betrag ist immer auf beiden Seiten gleich – dadurch bleibt die Bilanz ausgeglichen.</p>
+      <ul>
+        <li>Merksatz: <b>Soll = wohin fließt der Wert, Haben = woher kommt er.</b></li>
+        <li>Kommt Geld aufs Konto: <code>Bank an …</code> (Bank im Soll).</li>
+        <li>Geht Geld vom Konto: <code>… an Bank</code> (Bank im Haben).</li>
+        <li>Aufwand entsteht immer im Soll, Erlös immer im Haben.</li>
+        <li>Beispiel: Kauf von Büromaterial bar → <code>4930 Büromaterial an 1000 Kasse</code> (SKR03).</li>
+      </ul>
+
+      <h3>Steuer: Brutto, Vorsteuer, Umsatzsteuer</h3>
+      <ul>
+        <li><b>Erlöskonten sind Automatikkonten:</b> Du buchst den Bruttobetrag z. B. <code>Bank an Erlöse 19 %</code> – das Programm bucht die Umsatzsteuer selbst auf <code>1776</code> (SKR03) bzw. <code>3806</code> (SKR04) um.</li>
+        <li><b>Vorsteuer</b> (die USt, die du beim Einkauf zahlst) geht auf <code>1576</code> (SKR03) / <code>1406</code> (SKR04) und wird mit der Umsatzsteuer verrechnet.</li>
+        <li>Steuersätze: <b>19 %</b> Regelsatz, <b>7 %</b> ermäßigt (Bücher, Lebensmittel), manche Vorgänge steuerfrei (Miete, Gehälter, Versicherungen).</li>
+      </ul>
+
+      <h3>Typische Fallen</h3>
+      <div class="trap">
+        <b>⚠️ Nummern-Kollision:</b> <code>1200</code> ist im SKR03 die <b>Bank</b>, im SKR04 die <b>Forderungen</b>. Und <code>1600</code> ist im SKR03 eine <b>Verbindlichkeit</b>, im SKR04 die <b>Kasse</b>. Wer zwischen Rahmen umschlüsselt, vertauscht hier am häufigsten.
+      </div>
+      <ul>
+        <li><b>Privatentnahmen sind kein Aufwand</b> – sie mindern nicht den Gewinn, sondern das Eigenkapital.</li>
+        <li><b>Rechnung stellen ≠ Geld bekommen:</b> Erst <code>Forderungen an Erlöse</code>, beim Zahlungseingang dann <code>Bank an Forderungen</code>.</li>
+        <li><b>Bank → Kasse</b> (und umgekehrt) ist nur eine Umbuchung zwischen Bestandskonten – kein Aufwand, kein Erlös.</li>
+      </ul>
+
+      <h3>So lernst du mit diesem Trainer</h3>
+      <div class="path">
+        <div class="step"><p><b>Konto finden:</b> Erst die Nummern pauken – SKR03 und SKR04 getrennt, bis du ~80 % sicher hast.</p></div>
+        <div class="step"><p><b>Buchungssatz:</b> Dann die 12 Geschäftsfälle durcharbeiten. Lies die Erklärung unter jeder Lösung – dort steckt das eigentliche Lernen.</p></div>
+        <div class="step"><p><b>SKR03 ⇄ SKR04:</b> Zum Schluss das Umschlüsseln. Wichtig, wenn deine Software und die Kanzlei unterschiedliche Rahmen nutzen.</p></div>
+      </div>
+
+    </div>
+  </details>
 
   <div class="bar">
     <span class="label">Modus</span>
@@ -114,17 +219,6 @@
       <tbody></tbody>
     </table>
   </details>
-
-  <div class="rules">
-    <h2>Grundregeln</h2>
-    <ul>
-      <li>Jeder Buchungssatz lautet <code>Soll an Haben</code> – immer mindestens zwei Konten, Betrag links wie rechts gleich.</li>
-      <li><b>Bestandskonten</b> (Bank, Kasse, Forderungen …): Zugang im Soll = mehr Vermögen, Abgang im Haben.</li>
-      <li><b>Aufwandskonten</b> werden im Soll bebucht, <b>Ertragskonten</b> im Haben.</li>
-      <li>Erlöskonten wie <code>8400/4400</code> sind <b>Automatikkonten</b>: Das Programm bucht die USt selbst auf <code>1776</code> (SKR03) bzw. <code>3806</code> (SKR04) um. Du buchst den Bruttobetrag nur „Bank an Erlöse".</li>
-      <li>Merke die Falle: <code>1200</code> ist im SKR03 die <b>Bank</b>, im SKR04 die <b>Forderungen</b> – und <code>1600</code> ist im SKR03 eine <b>Verbindlichkeit</b>, im SKR04 die <b>Kasse</b>.</li>
-    </ul>
-  </div>
 </div>
 
 <script>
