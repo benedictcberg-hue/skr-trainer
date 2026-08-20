@@ -6,36 +6,41 @@
 <title>SKR03 / SKR04 Kontierungstrainer</title>
 <style>
   :root{
-    --bg:#0e1117; --card:#171c26; --card2:#1e2532; --line:#2a3242;
-    --txt:#e8ecf3; --dim:#9aa5b5; --accent:#4f8ef7; --accent2:#7c5cf0;
-    --ok:#2fbf71; --okbg:rgba(47,191,113,.12); --err:#e5534b; --errbg:rgba(229,83,75,.12);
+    /* DATEV-Markenfarben: Hellgrün RGB 144/208/51, Dunkelgrün RGB 3/154/154, Petrol #00595C, Anthrazit #1D1D1B */
+    --bg:#f4f6f0; --card:#ffffff; --card2:#eef2e7; --line:#dbe3d2;
+    --txt:#1d1d1b; --dim:#5f6a61;
+    --accent:#90d033; --accent-d:#77ab24; --petrol:#00595c; --teal:#039a9a;
+    --ok:#2f9e44; --okbg:rgba(144,208,51,.14); --err:#d64541; --errbg:rgba(214,69,65,.08);
     --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;min-height:100vh;padding:24px 16px 80px}
-  .wrap{max-width:860px;margin:0 auto}
-  h1{font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
-  h1 .tag{font-family:var(--mono);font-size:.8rem;color:var(--accent);vertical-align:middle;margin-left:8px}
-  .sub{color:var(--dim);font-size:.9rem;margin-top:4px}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;min-height:100vh;padding:0 0 80px}
+  .topbar{background:var(--accent);color:var(--txt);padding:14px 16px;border-bottom:4px solid var(--petrol)}
+  .topbar .inner{max-width:860px;margin:0 auto;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .topbar .brand{font-weight:800;font-size:1.15rem;letter-spacing:-.01em}
+  .topbar .brand span{font-family:var(--mono);font-size:.78rem;font-weight:700;background:var(--petrol);color:#fff;padding:2px 8px;border-radius:6px;vertical-align:middle}
+  .topbar .claim{font-size:.78rem;opacity:.75}
+  .wrap{max-width:860px;margin:0 auto;padding:20px 16px 0}
+  .sub{color:var(--dim);font-size:.9rem;margin-top:2px}
   .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:20px 0 14px}
   .seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
   .seg button{background:none;border:none;color:var(--dim);padding:8px 14px;font-size:.85rem;cursor:pointer;font-weight:600;transition:.15s}
-  .seg button.on{background:var(--accent);color:#fff}
-  .seg button:not(.on):hover{color:var(--txt)}
+  .seg button.on{background:var(--petrol);color:#fff}
+  .seg button:not(.on):hover{color:var(--txt);background:var(--card2)}
   .label{font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-right:2px}
-  .score{display:flex;gap:18px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;margin-bottom:18px;font-size:.85rem;color:var(--dim);flex-wrap:wrap}
+  .score{display:flex;gap:18px;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:10px 16px;margin-bottom:18px;font-size:.85rem;color:var(--dim);flex-wrap:wrap}
   .score b{color:var(--txt);font-family:var(--mono)}
-  .score .streak b{color:#f5a623}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
-  .qmeta{font-size:.75rem;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px}
+  .score .streak b{color:var(--accent-d)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:0 4px 18px rgba(29,29,27,.07)}
+  .qmeta{font-size:.75rem;color:var(--petrol);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px}
   .qtext{font-size:1.15rem;font-weight:600;margin-bottom:6px}
   .qsub{color:var(--dim);font-size:.9rem;margin-bottom:18px}
-  .betrag{font-family:var(--mono);background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:2px 10px;color:#ffd479}
+  .betrag{font-family:var(--mono);background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:2px 10px;color:var(--petrol);font-weight:700}
   .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   @media(max-width:560px){.opts{grid-template-columns:1fr}}
   .opt{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;text-align:left;color:var(--txt);font-size:.95rem;transition:.12s;display:flex;gap:10px;align-items:baseline;justify-content:center}
-  .opt:hover{border-color:var(--accent);transform:translateY(-1px)}
-  .opt .nr{font-family:var(--mono);color:var(--accent);font-weight:700;font-size:1.05rem}
+  .opt:hover{border-color:var(--accent-d);transform:translateY(-1px);box-shadow:0 3px 10px rgba(29,29,27,.08)}
+  .opt .nr{font-family:var(--mono);color:var(--petrol);font-weight:700;font-size:1.05rem}
   .opt.correct{border-color:var(--ok);background:var(--okbg)}
   .opt.wrong{border-color:var(--err);background:var(--errbg)}
   .opt:disabled{cursor:default;opacity:.85}
@@ -43,10 +48,10 @@
   .field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:220px}
   .field label{font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
   select{background:var(--card2);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:11px 12px;font-size:.9rem;font-family:var(--mono);width:100%}
-  select:focus{outline:none;border-color:var(--accent)}
+  select:focus{outline:none;border-color:var(--teal)}
   .an{font-family:var(--mono);color:var(--dim);padding-bottom:12px;font-weight:700}
   .hard{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--dim);margin:4px 0 14px;cursor:pointer;user-select:none}
-  .hard input{accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
+  .hard input{accent-color:var(--accent-d);width:16px;height:16px;cursor:pointer}
   .fb{margin-top:16px;border-radius:10px;padding:14px 16px;font-size:.9rem;display:none}
   .fb.show{display:block}
   .fb.ok{background:var(--okbg);border:1px solid var(--ok)}
@@ -57,60 +62,66 @@
   .fb ol li{margin:3px 0}
   .fb ol b{color:var(--txt)}
   .actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
-  .btn{background:var(--accent);border:none;color:#fff;border-radius:10px;padding:11px 22px;font-size:.9rem;font-weight:700;cursor:pointer;transition:.15s}
-  .btn:hover{filter:brightness(1.12)}
-  .btn.ghost{background:none;border:1px solid var(--line);color:var(--dim)}
-  .btn.ghost:hover{color:var(--txt);border-color:var(--dim)}
+  .btn{background:var(--accent);border:none;color:var(--txt);border-radius:10px;padding:11px 22px;font-size:.9rem;font-weight:700;cursor:pointer;transition:.15s}
+  .btn:hover{background:var(--accent-d);color:#fff}
+  .btn.ghost{background:none;border:1px solid var(--petrol);color:var(--petrol)}
+  .btn.ghost:hover{background:var(--petrol);color:#fff}
   .result{text-align:center;padding:10px 0}
-  .result .big{font-size:3rem;font-weight:800;font-family:var(--mono);margin:8px 0}
+  .result .big{font-size:3rem;font-weight:800;font-family:var(--mono);margin:8px 0;color:var(--petrol)}
   .result .grade{font-size:1.1rem;font-weight:700;margin-bottom:6px}
   .result .rdim{color:var(--dim);font-size:.88rem}
   .mistakes{text-align:left;margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
   .mistakes h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--err);margin-bottom:10px}
   .mistakes .m{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:.85rem}
   .mistakes .m .mq{color:var(--dim)}
-  .mistakes .m .ma{font-family:var(--mono);color:var(--ok);margin-top:3px}
+  .mistakes .m .ma{font-family:var(--mono);color:var(--petrol);margin-top:3px}
   details{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
   details.learn{margin-top:20px}
-  details.learn > summary{font-size:1.05rem;padding:16px 20px;background:linear-gradient(135deg,rgba(79,142,247,.12),rgba(124,92,240,.10))}
-  details.learn > summary::after{content:"Lies mich zuerst";float:right;font-size:.7rem;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-top:3px}
+  details.learn > summary{font-size:1.05rem;padding:16px 20px;background:linear-gradient(135deg,rgba(144,208,51,.22),rgba(3,154,154,.10))}
+  details.learn > summary::after{content:"Lies mich zuerst";float:right;font-size:.7rem;color:var(--petrol);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-top:3px}
   summary{cursor:pointer;padding:14px 18px;font-weight:700;font-size:.95rem;list-style:none}
-  summary::before{content:"\25B8 ";color:var(--accent)}
+  summary::before{content:"\25B8 ";color:var(--accent-d)}
   details[open] summary::before{content:"\25BE "}
   table{width:100%;border-collapse:collapse;font-size:.85rem}
   th,td{padding:8px 18px;text-align:left;border-top:1px solid var(--line)}
   th{color:var(--dim);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
-  td.nr{font-family:var(--mono);color:var(--accent)}
+  td.nr{font-family:var(--mono);color:var(--petrol);font-weight:700}
   td.art{color:var(--dim);font-size:.78rem}
   .learn{padding:6px 20px 22px;font-size:.9rem;color:var(--txt)}
-  .learn h3{font-size:.95rem;margin:20px 0 8px;color:var(--accent)}
+  .learn h3{font-size:.95rem;margin:20px 0 8px;color:var(--petrol)}
   .learn p{margin:6px 0;color:var(--dim)}
   .learn p b{color:var(--txt)}
   .learn ul,.learn ol{margin:6px 0 6px 4px;color:var(--dim)}
   .learn li{margin:4px 0 4px 16px}
   .learn li b{color:var(--txt)}
-  .learn code{font-family:var(--mono);color:#ffd479;font-size:.82rem}
+  .learn code{font-family:var(--mono);color:var(--petrol);font-size:.82rem;font-weight:700}
   .lrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
   @media(max-width:560px){.lrow{grid-template-columns:1fr}}
   .lbox{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
   .lbox h4{font-size:.85rem;margin-bottom:6px}
-  .lbox.s03 h4{color:var(--accent)}
-  .lbox.s04 h4{color:var(--accent2)}
+  .lbox.s03 h4{color:var(--accent-d)}
+  .lbox.s04 h4{color:var(--teal)}
   .lbox p{font-size:.82rem;color:var(--dim)}
   .lbox .cls{font-family:var(--mono);font-size:.78rem;color:var(--txt);display:block;margin:2px 0}
   .trap{background:var(--errbg);border:1px solid var(--err);border-radius:10px;padding:12px 14px;margin-top:10px;font-size:.85rem}
   .trap b{color:var(--err)}
   .path{counter-reset:step;margin-top:8px}
   .path .step{display:flex;gap:12px;margin:10px 0;align-items:flex-start}
-  .path .step::before{counter-increment:step;content:counter(step);background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;min-width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono)}
+  .path .step::before{counter-increment:step;content:counter(step);background:var(--accent);color:var(--txt);font-weight:700;font-size:.8rem;min-width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono)}
   .path .step p{margin:0;font-size:.85rem}
   .path .step p b{color:var(--txt)}
+  .footnote{max-width:860px;margin:26px auto 0;padding:0 16px;font-size:.72rem;color:var(--dim)}
   kbd{font-family:var(--mono);background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.75rem}
 </style>
 </head>
 <body>
+<div class="topbar">
+  <div class="inner">
+    <div class="brand">Kontierungstrainer <span>SKR03 ⇄ SKR04</span></div>
+    <div class="claim">Buchhaltung üben im DATEV-Look</div>
+  </div>
+</div>
 <div class="wrap">
-  <h1>Kontierungstrainer <span class="tag">SKR03 ⇄ SKR04</span></h1>
   <p class="sub">Kontonummern, Buchungssätze und Umschlüsseln – in 10er-Runden mit Auswertung.</p>
 
   <details class="learn">
@@ -234,6 +245,7 @@
     </table>
   </details>
 </div>
+<p class="footnote">Inoffizielles Lernprojekt – nicht von der DATEV eG. Kontenrahmen SKR03/SKR04 sind Standardwerke der DATEV.</p>
 
 <script>
 const KONTEN = [
@@ -440,7 +452,7 @@ function qKonto() {
   $("next").onclick = proceed;
 }
 
-/* ---------- Modus 2: Buchungssatz (einfach, mit 4-Schritte-Lösung) ---------- */
+/* ---------- Modus 2: Buchungssatz ---------- */
 function qSatz() {
   answered = false;
   const s = rnd(SAETZE);
