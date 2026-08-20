@@ -17,18 +17,15 @@
   h1{font-size:1.5rem;font-weight:700;letter-spacing:-.02em}
   h1 .tag{font-family:var(--mono);font-size:.8rem;color:var(--accent);vertical-align:middle;margin-left:8px}
   .sub{color:var(--dim);font-size:.9rem;margin-top:4px}
-  /* Toggle + Tabs */
   .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:20px 0 14px}
   .seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
-  .seg button{background:none;border:none;color:var(--dim);padding:8px 16px;font-size:.85rem;cursor:pointer;font-weight:600;transition:.15s}
+  .seg button{background:none;border:none;color:var(--dim);padding:8px 14px;font-size:.85rem;cursor:pointer;font-weight:600;transition:.15s}
   .seg button.on{background:var(--accent);color:#fff}
   .seg button:not(.on):hover{color:var(--txt)}
   .label{font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-right:2px}
-  /* Score */
   .score{display:flex;gap:18px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;margin-bottom:18px;font-size:.85rem;color:var(--dim);flex-wrap:wrap}
   .score b{color:var(--txt);font-family:var(--mono)}
   .score .streak b{color:#f5a623}
-  /* Card */
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
   .qmeta{font-size:.75rem;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:8px}
   .qtext{font-size:1.15rem;font-weight:600;margin-bottom:6px}
@@ -42,7 +39,6 @@
   .opt.correct{border-color:var(--ok);background:var(--okbg)}
   .opt.wrong{border-color:var(--err);background:var(--errbg)}
   .opt:disabled{cursor:default;opacity:.85}
-  /* Buchungssatz */
   .satzrow{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px}
   .field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:220px}
   .field label{font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
@@ -51,20 +47,29 @@
   .an{font-family:var(--mono);color:var(--dim);padding-bottom:12px;font-weight:700}
   .hard{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--dim);margin:4px 0 14px;cursor:pointer;user-select:none}
   .hard input{accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
-  /* Feedback */
   .fb{margin-top:16px;border-radius:10px;padding:14px 16px;font-size:.9rem;display:none}
   .fb.show{display:block}
   .fb.ok{background:var(--okbg);border:1px solid var(--ok)}
   .fb.err{background:var(--errbg);border:1px solid var(--err)}
-  .fb .satz{font-family:var(--mono);margin-top:6px;color:var(--txt)}
-  .fb .why{color:var(--dim);margin-top:6px}
-  /* Buttons */
+  .fb .satz{font-family:var(--mono);margin-top:6px;color:var(--txt);line-height:1.7}
+  .fb .why{color:var(--dim);margin-top:8px}
+  .fb ol{margin:8px 0 4px 20px;color:var(--dim)}
+  .fb ol li{margin:3px 0}
+  .fb ol b{color:var(--txt)}
   .actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
   .btn{background:var(--accent);border:none;color:#fff;border-radius:10px;padding:11px 22px;font-size:.9rem;font-weight:700;cursor:pointer;transition:.15s}
   .btn:hover{filter:brightness(1.12)}
   .btn.ghost{background:none;border:1px solid var(--line);color:var(--dim)}
   .btn.ghost:hover{color:var(--txt);border-color:var(--dim)}
-  /* Cheatsheet */
+  .result{text-align:center;padding:10px 0}
+  .result .big{font-size:3rem;font-weight:800;font-family:var(--mono);margin:8px 0}
+  .result .grade{font-size:1.1rem;font-weight:700;margin-bottom:6px}
+  .result .rdim{color:var(--dim);font-size:.88rem}
+  .mistakes{text-align:left;margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+  .mistakes h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--err);margin-bottom:10px}
+  .mistakes .m{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:.85rem}
+  .mistakes .m .mq{color:var(--dim)}
+  .mistakes .m .ma{font-family:var(--mono);color:var(--ok);margin-top:3px}
   details{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
   details.learn{margin-top:20px}
   details.learn > summary{font-size:1.05rem;padding:16px 20px;background:linear-gradient(135deg,rgba(79,142,247,.12),rgba(124,92,240,.10))}
@@ -77,12 +82,11 @@
   th{color:var(--dim);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
   td.nr{font-family:var(--mono);color:var(--accent)}
   td.art{color:var(--dim);font-size:.78rem}
-  /* Learn section */
   .learn{padding:6px 20px 22px;font-size:.9rem;color:var(--txt)}
   .learn h3{font-size:.95rem;margin:20px 0 8px;color:var(--accent)}
   .learn p{margin:6px 0;color:var(--dim)}
   .learn p b{color:var(--txt)}
-  .learn ul{margin:6px 0 6px 4px;color:var(--dim)}
+  .learn ul,.learn ol{margin:6px 0 6px 4px;color:var(--dim)}
   .learn li{margin:4px 0 4px 16px}
   .learn li b{color:var(--txt)}
   .learn code{font-family:var(--mono);color:#ffd479;font-size:.82rem}
@@ -101,25 +105,21 @@
   .path .step::before{counter-increment:step;content:counter(step);background:var(--accent);color:#fff;font-weight:700;font-size:.8rem;min-width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono)}
   .path .step p{margin:0;font-size:.85rem}
   .path .step p b{color:var(--txt)}
-  .rules{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;font-size:.88rem;color:var(--dim)}
-  .rules h2{font-size:.95rem;color:var(--txt);margin-bottom:8px}
-  .rules li{margin:5px 0 5px 18px}
-  .rules code{font-family:var(--mono);color:#ffd479;font-size:.82rem}
   kbd{font-family:var(--mono);background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.75rem}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Kontierungstrainer <span class="tag">SKR03 ⇄ SKR04</span></h1>
-  <p class="sub">Übe Kontonummern, Buchungssätze und das Umschlüsseln zwischen beiden DATEV-Kontenrahmen.</p>
+  <p class="sub">Kontonummern, Buchungssätze und Umschlüsseln – in 10er-Runden mit Auswertung.</p>
 
   <details class="learn">
     <summary>Einführung: Alles, was du wissen musst</summary>
     <div class="learn">
 
       <h3>Was ist ein Kontenrahmen?</h3>
-      <p>Ein <b>Kontenrahmen</b> ist die standardisierte Gesamtliste aller Buchungskonten – sozusagen der Katalog, aus dem dein Betrieb seinen eigenen Kontenplan ableitet. In Deutschland nutzen fast alle Steuerkanzleien die <b>DATEV-Standardkontenrahmen SKR03 und SKR04</b>. Beide bilden dieselben Geschäftsvorfälle ab und führen zum identischen Jahresabschluss – sie unterscheiden sich nur in der Sortierung.</p>
-      <p><b>Kontieren</b> heißt dann: jeden Beleg (Rechnung, Kassenzettel, Kontoauszug) dem richtigen Konto aus diesem Rahmen zuweisen.</p>
+      <p>Ein <b>Kontenrahmen</b> ist die standardisierte Gesamtliste aller Buchungskonten – der Katalog, aus dem dein Betrieb seinen eigenen Kontenplan ableitet. In Deutschland nutzen fast alle Steuerkanzleien die <b>DATEV-Standardkontenrahmen SKR03 und SKR04</b>. Beide bilden dieselben Geschäftsvorfälle ab und führen zum identischen Jahresabschluss – sie unterscheiden sich nur in der Sortierung.</p>
+      <p><b>Kontieren</b> heißt: jeden Beleg (Rechnung, Kassenzettel, Kontoauszug) dem richtigen Konto aus diesem Rahmen zuweisen.</p>
 
       <h3>SKR03 vs. SKR04 – derselbe Inhalt, zwei Sortierungen</h3>
       <div class="lrow">
@@ -144,31 +144,40 @@
           <span class="cls">5–7 · Betriebliche Aufwendungen</span>
         </div>
       </div>
-      <p>Dasselbe Konto hat je nach Rahmen eine andere Nummer – z. B. Bank: <code>1200</code> im SKR03, <code>1800</code> im SKR04. Fachlich ist keiner besser; wer bei einer Kanzlei ist, übernimmt deren Rahmen. Einmal gewählt, bleibt man dabei – ein Wechsel ist aufwändig.</p>
+      <p>Dasselbe Konto hat je nach Rahmen eine andere Nummer – z. B. Bank: <code>1200</code> im SKR03, <code>1800</code> im SKR04. Wer bei einer Kanzlei ist, übernimmt deren Rahmen. Einmal gewählt, bleibt man dabei – ein Wechsel ist aufwändig.</p>
 
       <h3>Die vier Kontenarten</h3>
       <ul>
-        <li><b>Bestandskonten</b> (aktiv): Kasse, Bank, Forderungen, Maschinen – zeigen, was du <i>hast</i>.</li>
-        <li><b>Bestandskonten</b> (passiv): Verbindlichkeiten, Eigenkapital – zeigen, <i>wem es gehört</i>.</li>
+        <li><b>Aktivkonten</b>: Kasse, Bank, Forderungen, Maschinen – zeigen, was du <i>hast</i>. Zunahme im <b>Soll</b>, Abnahme im <b>Haben</b>.</li>
+        <li><b>Passivkonten</b>: Verbindlichkeiten, Darlehen, Eigenkapital, USt-Schuld – zeigen, <i>wem es gehört</i>. Zunahme im <b>Haben</b>, Abnahme im <b>Soll</b>.</li>
         <li><b>Aufwandskonten</b>: Miete, Büromaterial, Löhne – Geld, das <i>rausgeht</i>. Werden im <b>Soll</b> bebucht.</li>
         <li><b>Ertragskonten</b>: Erlöse – Geld, das <i>reinkommt</i>. Werden im <b>Haben</b> bebucht.</li>
       </ul>
 
+      <h3>Die 4-Fragen-Methode</h3>
+      <p>So leitest du aus jedem Geschäftsvorfall systematisch den Buchungssatz ab – genau diese Schritte zeigt dir der Trainer nach jeder Antwort:</p>
+      <ol>
+        <li><b>Welche Konten</b> sind betroffen? (mindestens zwei)</li>
+        <li><b>Welche Kontenart</b> hat jedes Konto? (Aktiv / Passiv / Aufwand / Ertrag)</li>
+        <li><b>Zunahme oder Abnahme</b> auf jedem Konto?</li>
+        <li><b>Welche Seite</b> – Soll oder Haben? (aus Art + Bewegung ableiten)</li>
+      </ol>
+
       <h3>Soll an Haben – das Grundprinzip</h3>
-      <p>Die <b>doppelte Buchführung</b> bucht jeden Vorgang zweimal: einmal im <b>Soll</b>, einmal im <b>Haben</b>. Der Betrag ist immer auf beiden Seiten gleich – dadurch bleibt die Bilanz ausgeglichen.</p>
+      <p>Die <b>doppelte Buchführung</b> bucht jeden Vorgang mindestens zweimal: im <b>Soll</b> und im <b>Haben</b>. Der Gesamtbetrag ist auf beiden Seiten immer gleich – dadurch bleibt die Bilanz ausgeglichen.</p>
       <ul>
         <li>Merksatz: <b>Soll = wohin fließt der Wert, Haben = woher kommt er.</b></li>
-        <li>Kommt Geld aufs Konto: <code>Bank an …</code> (Bank im Soll).</li>
-        <li>Geht Geld vom Konto: <code>… an Bank</code> (Bank im Haben).</li>
-        <li>Aufwand entsteht immer im Soll, Erlös immer im Haben.</li>
+        <li>Kommt Geld aufs Konto: <code>Bank an …</code> · Geht Geld: <code>… an Bank</code></li>
         <li>Beispiel: Kauf von Büromaterial bar → <code>4930 Büromaterial an 1000 Kasse</code> (SKR03).</li>
       </ul>
 
-      <h3>Steuer: Brutto, Vorsteuer, Umsatzsteuer</h3>
+      <h3>Zusammengesetzte Buchungssätze (mit Steuer)</h3>
+      <p>Sobald Umsatz- oder Vorsteuer ins Spiel kommt, hat eine Seite <b>zwei Konten</b> – das nennt man zusammengesetzten Buchungssatz:</p>
       <ul>
-        <li><b>Erlöskonten sind Automatikkonten:</b> Du buchst den Bruttobetrag z. B. <code>Bank an Erlöse 19 %</code> – das Programm bucht die Umsatzsteuer selbst auf <code>1776</code> (SKR03) bzw. <code>3806</code> (SKR04) um.</li>
-        <li><b>Vorsteuer</b> (die USt, die du beim Einkauf zahlst) geht auf <code>1576</code> (SKR03) / <code>1406</code> (SKR04) und wird mit der Umsatzsteuer verrechnet.</li>
-        <li>Steuersätze: <b>19 %</b> Regelsatz, <b>7 %</b> ermäßigt (Bücher, Lebensmittel), manche Vorgänge steuerfrei (Miete, Gehälter, Versicherungen).</li>
+        <li>Einkauf: <code>Büromaterial 100 € + Vorsteuer 19 € an Kasse 119 €</code> – Aufwand netto + Steuer im Soll.</li>
+        <li>Verkauf: <code>Kasse 119 € an Erlöse 100 € + Umsatzsteuer 19 €</code> – die Steuer liegt im Haben, denn du schuldest sie dem Finanzamt (Passivkonto!).</li>
+        <li>In der Praxis nutzen Programme <b>Automatikkonten</b> (z. B. <code>8400/4400</code>), die die Steuer selbst umbuchen – im Modus „Mit Steuer" lernst du bewusst die ausführliche Variante, weil sie das Verständnis schult.</li>
+        <li>Steuersätze: <b>19 %</b> Regelsatz, <b>7 %</b> ermäßigt (Bücher, Lebensmittel), manches ist steuerfrei (Miete, Gehälter, Versicherungen).</li>
       </ul>
 
       <h3>Typische Fallen</h3>
@@ -178,14 +187,16 @@
       <ul>
         <li><b>Privatentnahmen sind kein Aufwand</b> – sie mindern nicht den Gewinn, sondern das Eigenkapital.</li>
         <li><b>Rechnung stellen ≠ Geld bekommen:</b> Erst <code>Forderungen an Erlöse</code>, beim Zahlungseingang dann <code>Bank an Forderungen</code>.</li>
-        <li><b>Bank → Kasse</b> (und umgekehrt) ist nur eine Umbuchung zwischen Bestandskonten – kein Aufwand, kein Erlös.</li>
+        <li><b>Darlehen aufnehmen ist kein Erlös</b> – Bank an Darlehen, steuerneutral.</li>
+        <li><b>Abschreibungen</b> fließt kein Geld: Aufwandskonto an Anlagekonto (z. B. <code>4830 an 0210</code> im SKR03).</li>
       </ul>
 
       <h3>So lernst du mit diesem Trainer</h3>
       <div class="path">
         <div class="step"><p><b>Konto finden:</b> Erst die Nummern pauken – SKR03 und SKR04 getrennt, bis du ~80 % sicher hast.</p></div>
-        <div class="step"><p><b>Buchungssatz:</b> Dann die 12 Geschäftsfälle durcharbeiten. Lies die Erklärung unter jeder Lösung – dort steckt das eigentliche Lernen. Aktiviere „Nur Kontonummern", sobald du die Namen-Nr.-Zuordnung testen willst.</p></div>
-        <div class="step"><p><b>SKR03 ⇄ SKR04:</b> Zum Schluss das Umschlüsseln. Wichtig, wenn deine Software und die Kanzlei unterschiedliche Rahmen nutzen.</p></div>
+        <div class="step"><p><b>Buchungssatz:</b> Die 14 Geschäftsfälle mit Automatik-Logik. Lies den 4-Schritte-Lösungsweg unter jeder Antwort.</p></div>
+        <div class="step"><p><b>Mit Steuer:</b> Zusammengesetzte Sätze mit expliziter Vorsteuer/USt – der Prüfungsklassiker.</p></div>
+        <div class="step"><p><b>SKR03 ⇄ SKR04:</b> Zum Schluss das Umschlüsseln – wichtig, wenn Software und Kanzlei verschiedene Rahmen nutzen.</p></div>
       </div>
 
     </div>
@@ -196,6 +207,7 @@
     <div class="seg" id="modeSeg">
       <button data-mode="konto" class="on">Konto finden</button>
       <button data-mode="satz">Buchungssatz</button>
+      <button data-mode="comp">Mit Steuer</button>
       <button data-mode="map">SKR03 ⇄ SKR04</button>
     </div>
     <span class="label" id="fwLabel">Rahmen</span>
@@ -215,9 +227,9 @@
   <div class="card" id="card"></div>
 
   <details>
-    <summary>Spickzettel: die 18 wichtigsten Konten</summary>
+    <summary>Spickzettel: die 22 wichtigsten Konten</summary>
     <table id="cheat">
-      <thead><tr><th>Konto</th><th>SKR03</th><th>SKR04</th><th>Art</th></tr></thead>
+      <thead><tr><th>Konto</th><th>SKR03</th><th>SKR04</th><th>Kontenart</th></tr></thead>
       <tbody></tbody>
     </table>
   </details>
@@ -225,24 +237,28 @@
 
 <script>
 const KONTEN = [
-  {name:"Kasse", s03:"1000", s04:"1600", art:"Bestand"},
-  {name:"Bank", s03:"1200", s04:"1800", art:"Bestand"},
-  {name:"Forderungen aus L&L", s03:"1400", s04:"1200", art:"Bestand"},
-  {name:"Verbindlichkeiten aus L&L", s03:"1600", s04:"3300", art:"Bestand"},
-  {name:"Vorsteuer 19 %", s03:"1576", s04:"1406", art:"Bestand"},
-  {name:"Umsatzsteuer 19 %", s03:"1776", s04:"3806", art:"Bestand"},
-  {name:"Privateinlagen", s03:"1800", s04:"2180", art:"Eigenkapital"},
-  {name:"Privatentnahmen", s03:"1880", s04:"2100", art:"Eigenkapital"},
-  {name:"Maschinen", s03:"0210", s04:"0440", art:"Anlage"},
-  {name:"Fuhrpark", s03:"0320", s04:"0520", art:"Anlage"},
-  {name:"Wareneingang 19 % VSt", s03:"3400", s04:"5400", art:"Aufwand"},
-  {name:"Löhne und Gehälter", s03:"4100", s04:"6020", art:"Aufwand"},
-  {name:"Miete (Büroraum)", s03:"4120", s04:"6310", art:"Aufwand"},
-  {name:"Reisekosten", s03:"4660", s04:"4670", art:"Aufwand"},
-  {name:"Telefon & Internet", s03:"4910", s04:"6805", art:"Aufwand"},
-  {name:"Büromaterial", s03:"4930", s04:"6815", art:"Aufwand"},
-  {name:"Erlöse 19 % USt", s03:"8400", s04:"4400", art:"Ertrag"},
-  {name:"Erlöse 7 % USt", s03:"8300", s04:"4300", art:"Ertrag"},
+  {name:"Kasse", s03:"1000", s04:"1600", typ:"aktiv"},
+  {name:"Bank", s03:"1200", s04:"1800", typ:"aktiv"},
+  {name:"Forderungen aus L&L", s03:"1400", s04:"1200", typ:"aktiv"},
+  {name:"Vorsteuer 19 %", s03:"1576", s04:"1406", typ:"aktiv"},
+  {name:"Vorsteuer 7 %", s03:"1571", s04:"1401", typ:"aktiv"},
+  {name:"Maschinen", s03:"0210", s04:"0440", typ:"aktiv"},
+  {name:"Fuhrpark", s03:"0320", s04:"0520", typ:"aktiv"},
+  {name:"Verbindlichkeiten aus L&L", s03:"1600", s04:"3300", typ:"passiv"},
+  {name:"Umsatzsteuer 19 %", s03:"1776", s04:"3806", typ:"passiv"},
+  {name:"Umsatzsteuer 7 %", s03:"1771", s04:"3801", typ:"passiv"},
+  {name:"Darlehen", s03:"1700", s04:"3000", typ:"passiv"},
+  {name:"Privateinlagen", s03:"1800", s04:"2180", typ:"passiv"},
+  {name:"Privatentnahmen", s03:"1880", s04:"2100", typ:"passiv"},
+  {name:"Wareneingang 19 % VSt", s03:"3400", s04:"5400", typ:"aufwand"},
+  {name:"Löhne und Gehälter", s03:"4100", s04:"6020", typ:"aufwand"},
+  {name:"Miete (Büroraum)", s03:"4120", s04:"6310", typ:"aufwand"},
+  {name:"Reisekosten", s03:"4660", s04:"4670", typ:"aufwand"},
+  {name:"Abschreibungen auf Sachanlagen", s03:"4830", s04:"6220", typ:"aufwand"},
+  {name:"Telefon & Internet", s03:"4910", s04:"6805", typ:"aufwand"},
+  {name:"Büromaterial", s03:"4930", s04:"6815", typ:"aufwand"},
+  {name:"Erlöse 19 % USt", s03:"8400", s04:"4400", typ:"ertrag"},
+  {name:"Erlöse 7 % USt", s03:"8300", s04:"4300", typ:"ertrag"},
 ];
 
 const SAETZE = [
@@ -282,48 +298,132 @@ const SAETZE = [
   {t:"Ein Kunde zahlt eine Rechnung über 1.070 € brutto (7 % USt, z. B. für ein Buch) per Überweisung.",
    betrag:"1.070,00 €", soll:"Bank", haben:"Erlöse 7 % USt",
    why:"Ermäßigter Steuersatz → eigenes Erlöskonto (8300/4300). Bank im Soll, Erlös im Haben."},
+  {t:"Am Jahresende schreibst du deine Maschinen planmäßig mit 1.000 € ab.",
+   betrag:"1.000,00 €", soll:"Abschreibungen auf Sachanlagen", haben:"Maschinen",
+   why:"Abschreibung = Aufwand im Soll, Wertminderung des Aktivkontos im Haben. Es fließt kein Geld und es gibt keinen Steuerschlüssel."},
+  {t:"Du nimmst ein Darlehen über 10.000 € auf – die Bank überweist den Betrag auf dein Geschäftskonto.",
+   betrag:"10.000,00 €", soll:"Bank", haben:"Darlehen",
+   why:"Bank (Aktiv, Zunahme) im Soll, Darlehen (Passiv, Zunahme) im Haben. Eine Einnahme, aber kein Erlös – steuerneutral."},
 ];
 
+const COMPOUND = [
+  {t:"Du kaufst Büromaterial für 119 € brutto und zahlst bar. Buche mit ausgewiesener Vorsteuer (netto 100 € + 19 € VSt).",
+   soll:["Büromaterial","Vorsteuer 19 %"], haben:["Kasse"],
+   amt:{"Büromaterial":"100,00 €","Vorsteuer 19 %":"19,00 €","Kasse":"119,00 €"},
+   why:"Aufwand (netto) + Vorsteuer im Soll, Kasse (brutto) im Haben. So sieht der Satz ohne Automatikkonto aus."},
+  {t:"Du kaufst eine Maschine für 11.900 € brutto auf Ziel (netto 10.000 € + 1.900 € VSt).",
+   soll:["Maschinen","Vorsteuer 19 %"], haben:["Verbindlichkeiten aus L&L"],
+   amt:{"Maschinen":"10.000,00 €","Vorsteuer 19 %":"1.900,00 €","Verbindlichkeiten aus L&L":"11.900,00 €"},
+   why:"Maschinen und Vorsteuer sind Aktivkonten mit Zunahme im Soll; die Verbindlichkeit (Passiv) nimmt im Haben zu."},
+  {t:"Du verkaufst Waren für 119 € brutto – der Kunde zahlt bar (netto 100 € + 19 € USt).",
+   soll:["Kasse"], haben:["Erlöse 19 % USt","Umsatzsteuer 19 %"],
+   amt:{"Kasse":"119,00 €","Erlöse 19 % USt":"100,00 €","Umsatzsteuer 19 %":"19,00 €"},
+   why:"Hier liegt die Steuer im Haben: Kasse (brutto) im Soll, Erlös (netto) + USt im Haben. USt ist ein Passivkonto – du schuldest sie dem Finanzamt."},
+  {t:"Du stellst eine Rechnung über 2.380 € brutto (netto 2.000 € + 380 € USt).",
+   soll:["Forderungen aus L&L"], haben:["Erlöse 19 % USt","Umsatzsteuer 19 %"],
+   amt:{"Forderungen aus L&L":"2.380,00 €","Erlöse 19 % USt":"2.000,00 €","Umsatzsteuer 19 %":"380,00 €"},
+   why:"Forderung (brutto) im Soll; Erlös und Umsatzsteuer im Haben."},
+  {t:"Wareneinkauf auf Ziel: 595 € brutto (netto 500 € + 95 € VSt).",
+   soll:["Wareneingang 19 % VSt","Vorsteuer 19 %"], haben:["Verbindlichkeiten aus L&L"],
+   amt:{"Wareneingang 19 % VSt":"500,00 €","Vorsteuer 19 %":"95,00 €","Verbindlichkeiten aus L&L":"595,00 €"},
+   why:"Aufwand + Vorsteuer im Soll, Verbindlichkeit im Haben."},
+  {t:"Du kaufst einen Transporter für 11.900 € brutto und bezahlst per Überweisung (netto 10.000 € + 1.900 € VSt).",
+   soll:["Fuhrpark","Vorsteuer 19 %"], haben:["Bank"],
+   amt:{"Fuhrpark":"10.000,00 €","Vorsteuer 19 %":"1.900,00 €","Bank":"11.900,00 €"},
+   why:"Fuhrpark + Vorsteuer (beide Aktiv, Zunahme) im Soll, Bank (Abgang) im Haben."},
+  {t:"Die Telefonrechnung über 59,50 € brutto wird per Lastschrift abgebucht (netto 50 € + 9,50 € VSt).",
+   soll:["Telefon & Internet","Vorsteuer 19 %"], haben:["Bank"],
+   amt:{"Telefon & Internet":"50,00 €","Vorsteuer 19 %":"9,50 €","Bank":"59,50 €"},
+   why:"Aufwand + Vorsteuer im Soll, Bankabgang im Haben."},
+  {t:"Du verkaufst Bücher für 1.070 € brutto auf Ziel (7 % USt: netto 1.000 € + 70 € USt).",
+   soll:["Forderungen aus L&L"], haben:["Erlöse 7 % USt","Umsatzsteuer 7 %"],
+   amt:{"Forderungen aus L&L":"1.070,00 €","Erlöse 7 % USt":"1.000,00 €","Umsatzsteuer 7 %":"70,00 €"},
+   why:"Ermäßigter Satz → eigene Konten für Erlös und USt (7 %). Forderung brutto im Soll."},
+];
+
+const ROUND = 10;
+const TYPL = {aktiv:"Aktivkonto", passiv:"Passivkonto", aufwand:"Aufwandskonto", ertrag:"Ertragskonto"};
+
 let mode = "konto", fw = "s03";
-let ok = 0, all = 0, streak = 0, answered = false, cur = null;
+let ok = 0, all = 0, streak = 0, answered = false;
+let round = 0, roundOk = 0, mistakes = [];
 
 const card = document.getElementById("card");
 const $ = id => document.getElementById(id);
 const rnd = a => a[Math.floor(Math.random() * a.length)];
 const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(p => p[1]);
 const kto = k => k[fw];
+const eqSet = (a, b) => a.length === b.length && a.every(x => b.includes(x));
 
-function score(win) {
-  all++;
-  if (win) { ok++; streak++; } else streak = 0;
+function dirText(k, seite) {
+  if (k.typ === "aktiv") return seite === "soll" ? "Zunahme" : "Abnahme";
+  if (k.typ === "passiv") return seite === "soll" ? "Abnahme" : "Zunahme";
+  if (k.typ === "aufwand") return seite === "soll" ? "Aufwand" : "Minderung";
+  return seite === "haben" ? "Ertrag" : "Minderung";
+}
+
+function score(win, frage, loesung) {
+  all++; round++;
+  if (win) { ok++; streak++; roundOk++; }
+  else { streak = 0; mistakes.push({frage, loesung}); }
   $("scOk").textContent = ok;
   $("scAll").textContent = all;
   $("scPct").textContent = all ? Math.round(ok / all * 100) + " %" : "–";
   $("scStreak").textContent = streak;
 }
 
-/* Distraktoren: bevorzugt gleiche Anfangsziffer (gleiche Kontenklasse) */
+function nextBtn() {
+  return round >= ROUND ? "Runde auswerten →" : "Nächste Frage →";
+}
+
+function proceed() {
+  if (round >= ROUND) showResult(); else renderCurrent();
+}
+
+function showResult() {
+  const pct = Math.round(roundOk / ROUND * 100);
+  let grade;
+  if (pct >= 90) grade = "🏆 Prüfungsreif!";
+  else if (pct >= 70) grade = "💪 Stark – fast sicher.";
+  else if (pct >= 50) grade = "🌱 Solide Basis – weiterdrillen.";
+  else grade = "🔁 Erst die Einführung lesen, dann neue Runde.";
+  card.innerHTML = `
+    <div class="result">
+      <div class="qmeta">Runde beendet</div>
+      <div class="big">${roundOk}/${ROUND}</div>
+      <div class="grade">${grade}</div>
+      <div class="rdim">${pct} % richtig in dieser Runde</div>
+      ${mistakes.length ? `<div class="mistakes"><h4>Deine Fehler – hier lohnt sich Wiederholung:</h4>
+        ${mistakes.map(m => `<div class="m"><div class="mq">${m.frage}</div><div class="ma">→ ${m.loesung}</div></div>`).join("")}
+      </div>` : `<p class="rdim" style="margin-top:14px">Fehlerfrei! 🎉</p>`}
+      <div class="actions" style="justify-content:center"><button class="btn" id="again">Neue Runde (10 Fragen)</button></div>
+    </div>`;
+  $("again").onclick = () => { startRound(); renderCurrent(); };
+}
+
+function startRound() { round = 0; roundOk = 0; mistakes = []; }
+
 function distraktoren(k, n) {
   const same = KONTEN.filter(x => x !== k && kto(x)[0] === kto(k)[0]);
   const rest = KONTEN.filter(x => x !== k && kto(x)[0] !== kto(k)[0]);
   return [...shuffle(same), ...shuffle(rest)].slice(0, n);
 }
 
-/* ---------- Modus 1: Konto finden (nur Nummern als Optionen!) ---------- */
+/* ---------- Modus 1: Konto finden ---------- */
 function qKonto() {
   answered = false;
   const k = rnd(KONTEN);
   const opts = shuffle([k, ...distraktoren(k, 3)]);
-  cur = k;
   card.innerHTML = `
-    <div class="qmeta">${fw === "s03" ? "SKR03" : "SKR04"} · Konto finden</div>
+    <div class="qmeta">${fw === "s03" ? "SKR03" : "SKR04"} · Konto finden · Frage ${round + 1}/${ROUND}</div>
     <div class="qtext">Welche Kontonummer hat „${k.name}"?</div>
-    <div class="qsub">Kontenart: ${k.art}konto · Die Namen helfen dir diesmal nicht – nur die Nummer zählt 😉</div>
+    <div class="qsub">Kontenart: ${TYPL[k.typ]} · Nur die Nummer zählt 😉</div>
     <div class="opts">${opts.map(o =>
       `<button class="opt" data-nr="${kto(o)}"><span class="nr">${kto(o)}</span></button>`).join("")}
     </div>
     <div class="fb" id="fb"></div>
-    <div class="actions"><button class="btn ghost" id="next" style="display:none">Nächste Frage →</button></div>`;
+    <div class="actions"><button class="btn ghost" id="next" style="display:none"></button></div>`;
+  $("next").textContent = nextBtn();
   card.querySelectorAll(".opt").forEach(b => b.onclick = () => {
     if (answered) return; answered = true;
     const win = b.dataset.nr === kto(k);
@@ -334,21 +434,21 @@ function qKonto() {
     fb.innerHTML = (win ? "✅ Richtig!" : "❌ Falsch.") +
       ` <span class="satz">${k.name} = ${kto(k)} im ${fw === "s03" ? "SKR03" : "SKR04"} (im anderen Rahmen: ${fw === "s03" ? k.s04 : k.s03})</span>`;
     $("next").style.display = "";
-    score(win);
+    $("next").textContent = nextBtn();
+    score(win, `„${k.name}" im ${fw === "s03" ? "SKR03" : "SKR04"}`, kto(k));
   });
-  $("next").onclick = qKonto;
+  $("next").onclick = proceed;
 }
 
-/* ---------- Modus 2: Buchungssatz ---------- */
+/* ---------- Modus 2: Buchungssatz (einfach, mit 4-Schritte-Lösung) ---------- */
 function qSatz() {
   answered = false;
   const s = rnd(SAETZE);
-  cur = s;
   const list = [...KONTEN].sort((a, b) => kto(a).localeCompare(kto(b)));
   const buildOpts = hard => list.map(k =>
     `<option value="${k.name}">${hard ? kto(k) : kto(k) + " · " + k.name}</option>`).join("");
   card.innerHTML = `
-    <div class="qmeta">${fw === "s03" ? "SKR03" : "SKR04"} · Buchungssatz bilden</div>
+    <div class="qmeta">${fw === "s03" ? "SKR03" : "SKR04"} · Buchungssatz · Frage ${round + 1}/${ROUND}</div>
     <div class="qtext">${s.t}</div>
     <div class="qsub">Betrag: <span class="betrag">${s.betrag}</span> · Bilde den Buchungssatz (Soll an Haben):</div>
     <label class="hard"><input type="checkbox" id="hardMode"> Schwer: nur Kontonummern anzeigen</label>
@@ -360,7 +460,7 @@ function qSatz() {
     <div class="fb" id="fb"></div>
     <div class="actions">
       <button class="btn" id="check">Prüfen</button>
-      <button class="btn ghost" id="next" style="display:none">Nächster Fall →</button>
+      <button class="btn ghost" id="next" style="display:none"></button>
     </div>`;
   const fill = hard => {
     const so = $("selSoll").value, ha = $("selHaben").value;
@@ -382,31 +482,98 @@ function qSatz() {
     fb.className = "fb show " + (win ? "ok" : "err");
     fb.innerHTML = (win ? "✅ Korrekt!" : "❌ Nicht ganz.") +
       `<div class="satz">${kto(kS)} ${kS.name} &nbsp;an&nbsp; ${kto(kH)} ${kH.name} &nbsp;·&nbsp; ${s.betrag}</div>
-       <div class="why">${s.why}</div>`;
+       <div class="why"><b>Der 4-Schritte-Weg dahin:</b>
+       <ol>
+         <li>Betroffene Konten: <b>${kS.name}</b> und <b>${kH.name}</b></li>
+         <li>Kontenart: ${kS.name} = ${TYPL[kS.typ]} · ${kH.name} = ${TYPL[kH.typ]}</li>
+         <li>Bewegung: ${kS.name} = ${dirText(kS, "soll")} · ${kH.name} = ${dirText(kH, "haben")}</li>
+         <li>Seite: ${kS.name} → <b>Soll</b> · ${kH.name} → <b>Haben</b></li>
+       </ol>${s.why}</div>`;
     $("next").style.display = "";
-    score(win);
+    $("next").textContent = nextBtn();
+    score(win, s.t, `${kto(kS)} ${kS.name} an ${kto(kH)} ${kH.name}`);
   };
-  $("next").onclick = qSatz;
+  $("next").onclick = proceed;
 }
 
-/* ---------- Modus 3: Mapping ---------- */
+/* ---------- Modus 3: Zusammengesetzte Buchungssätze ---------- */
+function qComp() {
+  answered = false;
+  const s = rnd(COMPOUND);
+  const list = [...KONTEN].sort((a, b) => kto(a).localeCompare(kto(b)));
+  const buildOpts = hard => list.map(k =>
+    `<option value="${k.name}">${hard ? kto(k) : kto(k) + " · " + k.name}</option>`).join("");
+  card.innerHTML = `
+    <div class="qmeta">${fw === "s03" ? "SKR03" : "SKR04"} · Mit Steuer (zusammengesetzt) · Frage ${round + 1}/${ROUND}</div>
+    <div class="qtext">${s.t}</div>
+    <div class="qsub">Eine Seite hat <b>zwei Konten</b> – wähle auf beiden Seiten je Konto 1 und ggf. Konto 2:</div>
+    <label class="hard"><input type="checkbox" id="hardMode"> Schwer: nur Kontonummern anzeigen</label>
+    <div class="satzrow">
+      <div class="field"><label>Soll</label>
+        <select id="selS1"></select>
+        <select id="selS2"></select>
+      </div>
+      <div class="an">an</div>
+      <div class="field"><label>Haben</label>
+        <select id="selH1"></select>
+        <select id="selH2"></select>
+      </div>
+    </div>
+    <div class="fb" id="fb"></div>
+    <div class="actions">
+      <button class="btn" id="check">Prüfen</button>
+      <button class="btn ghost" id="next" style="display:none"></button>
+    </div>`;
+  const ids = ["selS1", "selS2", "selH1", "selH2"];
+  const fill = hard => {
+    const vals = ids.map(i => $(i).value);
+    ids.forEach((i, x) => {
+      $(i).innerHTML = `<option value="">– ${x % 2 === 0 ? "Konto 1" : "Konto 2 (optional)"} –</option>` + buildOpts(hard);
+      $(i).value = vals[x];
+    });
+  };
+  fill(false);
+  $("hardMode").onchange = e => fill(e.target.checked);
+  $("check").onclick = () => {
+    if (answered) return;
+    const sSel = [...new Set([$("selS1").value, $("selS2").value].filter(Boolean))];
+    const hSel = [...new Set([$("selH1").value, $("selH2").value].filter(Boolean))];
+    if (!sSel.length || !hSel.length) return;
+    answered = true;
+    const win = eqSet(sSel, s.soll) && eqSet(hSel, s.haben);
+    const line = n => { const k = KONTEN.find(x => x.name === n); return `${kto(k)} ${n} ${s.amt[n]}`; };
+    const satzTxt = s.soll.map(line).join(" + ") + "  an  " + s.haben.map(line).join(" + ");
+    const fb = $("fb");
+    fb.className = "fb show " + (win ? "ok" : "err");
+    fb.innerHTML = (win ? "✅ Korrekt!" : "❌ Nicht ganz.") +
+      `<div class="satz">${satzTxt}</div>
+       <div class="why">${s.why}</div>`;
+    $("next").style.display = "";
+    $("next").textContent = nextBtn();
+    score(win, s.t, satzTxt);
+  };
+  $("next").onclick = proceed;
+}
+
+/* ---------- Modus 4: Mapping ---------- */
 function qMap() {
   answered = false;
   const k = rnd(KONTEN);
-  const dir = Math.random() < 0.5; // true: 03→04
+  const dir = Math.random() < 0.5;
   const from = dir ? k.s03 : k.s04, to = dir ? k.s04 : k.s03;
   const fromL = dir ? "SKR03" : "SKR04", toL = dir ? "SKR04" : "SKR03";
   const pool = KONTEN.map(x => dir ? x.s04 : x.s03).filter(n => n !== to);
   const opts = shuffle([to, ...shuffle(pool).slice(0, 3)]);
   card.innerHTML = `
-    <div class="qmeta">Umschlüsseln · ${fromL} → ${toL}</div>
+    <div class="qmeta">Umschlüsseln · ${fromL} → ${toL} · Frage ${round + 1}/${ROUND}</div>
     <div class="qtext">„${k.name}" hat im ${fromL} die Nummer <span class="betrag">${from}</span>.</div>
     <div class="qsub">Wie lautet die Nummer im ${toL}?</div>
     <div class="opts">${opts.map(n =>
       `<button class="opt" data-nr="${n}"><span class="nr">${n}</span></button>`).join("")}
     </div>
     <div class="fb" id="fb"></div>
-    <div class="actions"><button class="btn ghost" id="next" style="display:none">Nächste Frage →</button></div>`;
+    <div class="actions"><button class="btn ghost" id="next" style="display:none"></button></div>`;
+  $("next").textContent = nextBtn();
   card.querySelectorAll(".opt").forEach(b => b.onclick = () => {
     if (answered) return; answered = true;
     const win = b.dataset.nr === to;
@@ -417,18 +584,24 @@ function qMap() {
     fb.innerHTML = (win ? "✅ Richtig!" : "❌ Falsch.") +
       ` <span class="satz">${k.name}: SKR03 ${k.s03} ⇄ SKR04 ${k.s04}</span>`;
     $("next").style.display = "";
-    score(win);
+    $("next").textContent = nextBtn();
+    score(win, `${k.name}: ${fromL} ${from} → ${toL} ?`, to);
   });
-  $("next").onclick = qMap;
+  $("next").onclick = proceed;
 }
 
 /* ---------- Steuerung ---------- */
+function renderCurrent() {
+  if (mode === "konto") qKonto();
+  else if (mode === "satz") qSatz();
+  else if (mode === "comp") qComp();
+  else qMap();
+}
 function render() {
   $("fwSeg").style.display = mode === "map" ? "none" : "";
   $("fwLabel").style.display = mode === "map" ? "none" : "";
-  if (mode === "konto") qKonto();
-  else if (mode === "satz") qSatz();
-  else qMap();
+  startRound();
+  renderCurrent();
 }
 $("modeSeg").querySelectorAll("button").forEach(b => b.onclick = () => {
   mode = b.dataset.mode;
@@ -443,7 +616,7 @@ $("fwSeg").querySelectorAll("button").forEach(b => b.onclick = () => {
 
 /* Spickzettel */
 $("cheat").querySelector("tbody").innerHTML = KONTEN.map(k =>
-  `<tr><td>${k.name}</td><td class="nr">${k.s03}</td><td class="nr">${k.s04}</td><td class="art">${k.art}</td></tr>`).join("");
+  `<tr><td>${k.name}</td><td class="nr">${k.s03}</td><td class="nr">${k.s04}</td><td class="art">${TYPL[k.typ]}</td></tr>`).join("");
 
 render();
 </script>
