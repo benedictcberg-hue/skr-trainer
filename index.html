@@ -17,17 +17,55 @@
   body{background:var(--bg);color:var(--txt);font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.55;min-height:100vh;padding:0 0 80px}
   .topbar{background:var(--accent);color:var(--txt);padding:14px 16px;border-bottom:4px solid var(--petrol)}
   .topbar .inner{max-width:860px;margin:0 auto;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-  .topbar .brand{font-weight:800;font-size:1.15rem;letter-spacing:-.01em}
+  .topbar .brand{font-weight:800;font-size:1.15rem;letter-spacing:-.01em;cursor:pointer}
   .topbar .brand span{font-family:var(--mono);font-size:.78rem;font-weight:700;background:var(--petrol);color:#fff;padding:2px 8px;border-radius:6px;vertical-align:middle}
   .topbar .claim{font-size:.78rem;opacity:.75}
   .wrap{max-width:860px;margin:0 auto;padding:20px 16px 0}
   .sub{color:var(--dim);font-size:.9rem;margin-top:2px}
-  .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:20px 0 14px}
+  h2.sec{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--petrol);margin:26px 0 12px}
+  /* ---------- Modul-Karten ---------- */
+  .mods{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:640px){.mods{grid-template-columns:1fr}}
+  details.mod{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;align-self:start}
+  details.mod > summary{cursor:pointer;padding:14px 16px;font-weight:700;font-size:.92rem;list-style:none;display:flex;gap:10px;align-items:center}
+  details.mod > summary .mi{font-size:1.2rem}
+  details.mod > summary::after{content:"\25B8";color:var(--accent-d);margin-left:auto;font-size:.8rem}
+  details.mod[open] > summary::after{content:"\25BE"}
+  details.mod[open]{border-color:var(--accent)}
+  .mod .body{padding:2px 16px 16px;font-size:.87rem}
+  .mod .body p{margin:6px 0;color:var(--dim)}
+  .mod .body p b{color:var(--txt)}
+  .mod .body ul,.mod .body ol{margin:6px 0 6px 4px;color:var(--dim)}
+  .mod .body li{margin:4px 0 4px 16px}
+  .mod .body li b{color:var(--txt)}
+  .mod .body code{font-family:var(--mono);color:var(--petrol);font-size:.8rem;font-weight:700}
+  .lrow{display:grid;grid-template-columns:1fr;gap:10px;margin-top:8px}
+  .lbox{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .lbox h4{font-size:.82rem;margin-bottom:5px}
+  .lbox.s03 h4{color:var(--accent-d)}
+  .lbox.s04 h4{color:var(--teal)}
+  .lbox p{font-size:.8rem;color:var(--dim)}
+  .lbox .cls{font-family:var(--mono);font-size:.76rem;color:var(--txt);display:block;margin:2px 0}
+  .trap{background:var(--errbg);border:1px solid var(--err);border-radius:10px;padding:10px 12px;margin:8px 0;font-size:.84rem}
+  .trap b{color:var(--err)}
+  /* ---------- Quiz-Kacheln ---------- */
+  .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media(max-width:640px){.tiles{grid-template-columns:1fr}}
+  .tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;cursor:pointer;text-align:left;color:var(--txt);transition:.15s;font-family:inherit}
+  .tile:hover{border-color:var(--accent-d);transform:translateY(-2px);box-shadow:0 6px 16px rgba(29,29,27,.10)}
+  .tile .ti{font-size:1.6rem;margin-bottom:8px}
+  .tile .tt{font-weight:800;font-size:1rem;margin-bottom:4px}
+  .tile .td{font-size:.82rem;color:var(--dim)}
+  .tile .tm{margin-top:10px;font-family:var(--mono);font-size:.72rem;color:var(--petrol);font-weight:700}
+  /* ---------- Quiz-Ansicht ---------- */
+  .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:6px 0 14px}
   .seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
   .seg button{background:none;border:none;color:var(--dim);padding:8px 14px;font-size:.85rem;cursor:pointer;font-weight:600;transition:.15s}
   .seg button.on{background:var(--petrol);color:#fff}
   .seg button:not(.on):hover{color:var(--txt);background:var(--card2)}
   .label{font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-right:2px}
+  .back{background:none;border:1px solid var(--petrol);color:var(--petrol);border-radius:10px;padding:8px 14px;font-size:.85rem;font-weight:700;cursor:pointer}
+  .back:hover{background:var(--petrol);color:#fff}
   .score{display:flex;gap:18px;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:10px;padding:10px 16px;margin-bottom:18px;font-size:.85rem;color:var(--dim);flex-wrap:wrap}
   .score b{color:var(--txt);font-family:var(--mono)}
   .score .streak b{color:var(--accent-d)}
@@ -75,41 +113,15 @@
   .mistakes .m{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:.85rem}
   .mistakes .m .mq{color:var(--dim)}
   .mistakes .m .ma{font-family:var(--mono);color:var(--petrol);margin-top:3px}
-  details{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-  details.learn{margin-top:20px}
-  details.learn > summary{font-size:1.05rem;padding:16px 20px;background:linear-gradient(135deg,rgba(144,208,51,.22),rgba(3,154,154,.10))}
-  details.learn > summary::after{content:"Lies mich zuerst";float:right;font-size:.7rem;color:var(--petrol);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-top:3px}
-  summary{cursor:pointer;padding:14px 18px;font-weight:700;font-size:.95rem;list-style:none}
-  summary::before{content:"\25B8 ";color:var(--accent-d)}
-  details[open] summary::before{content:"\25BE "}
+  details.cheat{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  details.cheat > summary{cursor:pointer;padding:14px 18px;font-weight:700;font-size:.95rem;list-style:none}
+  details.cheat > summary::before{content:"\25B8 ";color:var(--accent-d)}
+  details.cheat[open] > summary::before{content:"\25BE "}
   table{width:100%;border-collapse:collapse;font-size:.85rem}
   th,td{padding:8px 18px;text-align:left;border-top:1px solid var(--line)}
   th{color:var(--dim);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
   td.nr{font-family:var(--mono);color:var(--petrol);font-weight:700}
   td.art{color:var(--dim);font-size:.78rem}
-  .learn{padding:6px 20px 22px;font-size:.9rem;color:var(--txt)}
-  .learn h3{font-size:.95rem;margin:20px 0 8px;color:var(--petrol)}
-  .learn p{margin:6px 0;color:var(--dim)}
-  .learn p b{color:var(--txt)}
-  .learn ul,.learn ol{margin:6px 0 6px 4px;color:var(--dim)}
-  .learn li{margin:4px 0 4px 16px}
-  .learn li b{color:var(--txt)}
-  .learn code{font-family:var(--mono);color:var(--petrol);font-size:.82rem;font-weight:700}
-  .lrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
-  @media(max-width:560px){.lrow{grid-template-columns:1fr}}
-  .lbox{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
-  .lbox h4{font-size:.85rem;margin-bottom:6px}
-  .lbox.s03 h4{color:var(--accent-d)}
-  .lbox.s04 h4{color:var(--teal)}
-  .lbox p{font-size:.82rem;color:var(--dim)}
-  .lbox .cls{font-family:var(--mono);font-size:.78rem;color:var(--txt);display:block;margin:2px 0}
-  .trap{background:var(--errbg);border:1px solid var(--err);border-radius:10px;padding:12px 14px;margin-top:10px;font-size:.85rem}
-  .trap b{color:var(--err)}
-  .path{counter-reset:step;margin-top:8px}
-  .path .step{display:flex;gap:12px;margin:10px 0;align-items:flex-start}
-  .path .step::before{counter-increment:step;content:counter(step);background:var(--accent);color:var(--txt);font-weight:700;font-size:.8rem;min-width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono)}
-  .path .step p{margin:0;font-size:.85rem}
-  .path .step p b{color:var(--txt)}
   .footnote{max-width:860px;margin:26px auto 0;padding:0 16px;font-size:.72rem;color:var(--dim)}
   kbd{font-family:var(--mono);background:var(--card2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:.75rem}
 </style>
@@ -117,110 +129,156 @@
 <body>
 <div class="topbar">
   <div class="inner">
-    <div class="brand">Kontierungstrainer <span>SKR03 ⇄ SKR04</span></div>
+    <div class="brand" id="brandHome">Kontierungstrainer <span>SKR03 ⇄ SKR04</span></div>
     <div class="claim">Buchhaltung üben im DATEV-Look</div>
   </div>
 </div>
-<div class="wrap">
-  <p class="sub">Kontonummern, Buchungssätze und Umschlüsseln – in 10er-Runden mit Auswertung.</p>
 
-  <details class="learn">
-    <summary>Einführung: Alles, was du wissen musst</summary>
-    <div class="learn">
+<!-- ============ STARTSEITE ============ -->
+<div class="wrap" id="home">
+  <p class="sub">Lerne die DATEV-Kontenrahmen in sechs Modulen – und teste dich danach in vier Quiz-Modi.</p>
 
-      <h3>Was ist ein Kontenrahmen?</h3>
-      <p>Ein <b>Kontenrahmen</b> ist die standardisierte Gesamtliste aller Buchungskonten – der Katalog, aus dem dein Betrieb seinen eigenen Kontenplan ableitet. In Deutschland nutzen fast alle Steuerkanzleien die <b>DATEV-Standardkontenrahmen SKR03 und SKR04</b>. Beide bilden dieselben Geschäftsvorfälle ab und führen zum identischen Jahresabschluss – sie unterscheiden sich nur in der Sortierung.</p>
-      <p><b>Kontieren</b> heißt: jeden Beleg (Rechnung, Kassenzettel, Kontoauszug) dem richtigen Konto aus diesem Rahmen zuweisen.</p>
+  <h2 class="sec">Lernmodule</h2>
+  <div class="mods">
 
-      <h3>SKR03 vs. SKR04 – derselbe Inhalt, zwei Sortierungen</h3>
-      <div class="lrow">
-        <div class="lbox s03">
-          <h4>SKR03 · Prozessgliederung</h4>
-          <p>Sortiert nach dem betrieblichen Ablauf. Typisch für kleine Betriebe, Freiberufler, EÜR.</p>
-          <span class="cls">0 · Anlage- &amp; Kapitalkonten</span>
-          <span class="cls">1 · Finanz- &amp; Privatkonten</span>
-          <span class="cls">2 · Abgrenzungskonten</span>
-          <span class="cls">3 · Wareneingang / Bestände</span>
-          <span class="cls">4 · Betriebliche Aufwendungen</span>
-          <span class="cls">8 · Erlöse</span>
+    <details class="mod">
+      <summary><span class="mi">📚</span> 1 · Was ist ein Kontenrahmen?</summary>
+      <div class="body">
+        <p>Ein <b>Kontenrahmen</b> ist die standardisierte Gesamtliste aller Buchungskonten – der Katalog, aus dem dein Betrieb seinen eigenen Kontenplan ableitet.</p>
+        <p>In Deutschland nutzen fast alle Steuerkanzleien die <b>DATEV-Standardkontenrahmen SKR03 und SKR04</b>. Beide bilden dieselben Geschäftsvorfälle ab und führen zum identischen Jahresabschluss – sie unterscheiden sich nur in der Sortierung.</p>
+        <p><b>Kontieren</b> heißt: jeden Beleg (Rechnung, Kassenzettel, Kontoauszug) dem richtigen Konto aus diesem Rahmen zuweisen.</p>
+      </div>
+    </details>
+
+    <details class="mod">
+      <summary><span class="mi">⚖️</span> 2 · SKR03 vs. SKR04</summary>
+      <div class="body">
+        <p>Derselbe Inhalt, zwei Sortierungen – dasselbe Konto trägt je nach Rahmen eine andere Nummer.</p>
+        <div class="lrow">
+          <div class="lbox s03">
+            <h4>SKR03 · Prozessgliederung</h4>
+            <p>Nach betrieblichem Ablauf. Für kleine Betriebe, Freiberufler, EÜR.</p>
+            <span class="cls">0 · Anlage- &amp; Kapital</span>
+            <span class="cls">1 · Finanzen &amp; Privat</span>
+            <span class="cls">3 · Wareneingang</span>
+            <span class="cls">4 · Aufwendungen</span>
+            <span class="cls">8 · Erlöse</span>
+          </div>
+          <div class="lbox s04">
+            <h4>SKR04 · Abschlussgliederung</h4>
+            <p>Nach Bilanz &amp; GuV (§ 266 HGB). Für GmbH, UG, Bilanzierer.</p>
+            <span class="cls">0 · Anlagevermögen</span>
+            <span class="cls">1 · Umlaufvermögen</span>
+            <span class="cls">2 · Eigenkapital</span>
+            <span class="cls">3 · Fremdkapital</span>
+            <span class="cls">4–7 · Erträge / Aufwendungen</span>
+          </div>
         </div>
-        <div class="lbox s04">
-          <h4>SKR04 · Abschlussgliederung</h4>
-          <p>Sortiert nach Bilanz &amp; GuV (§ 266 HGB). Typisch für GmbH, UG und bilanzierende Unternehmen.</p>
-          <span class="cls">0 · Anlagevermögen</span>
-          <span class="cls">1 · Umlaufvermögen</span>
-          <span class="cls">2 · Eigenkapital</span>
-          <span class="cls">3 · Fremdkapital</span>
-          <span class="cls">4 · Betriebliche Erträge</span>
-          <span class="cls">5–7 · Betriebliche Aufwendungen</span>
+        <p>Wer bei einer Kanzlei ist, übernimmt deren Rahmen. Einmal gewählt, bleibt man dabei – ein Wechsel ist aufwändig.</p>
+      </div>
+    </details>
+
+    <details class="mod">
+      <summary><span class="mi">🗂️</span> 3 · Die vier Kontenarten</summary>
+      <div class="body">
+        <ul>
+          <li><b>Aktivkonten</b>: Kasse, Bank, Forderungen, Maschinen – zeigen, was du <i>hast</i>. Zunahme im <b>Soll</b>, Abnahme im <b>Haben</b>.</li>
+          <li><b>Passivkonten</b>: Verbindlichkeiten, Darlehen, Eigenkapital, USt-Schuld – zeigen, <i>wem es gehört</i>. Zunahme im <b>Haben</b>, Abnahme im <b>Soll</b>.</li>
+          <li><b>Aufwandskonten</b>: Miete, Büromaterial, Löhne – Geld, das <i>rausgeht</i>. Werden im <b>Soll</b> bebucht.</li>
+          <li><b>Ertragskonten</b>: Erlöse – Geld, das <i>reinkommt</i>. Werden im <b>Haben</b> bebucht.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="mod">
+      <summary><span class="mi">🧭</span> 4 · Soll an Haben</summary>
+      <div class="body">
+        <p>Die <b>doppelte Buchführung</b> bucht jeden Vorgang mindestens zweimal: im <b>Soll</b> und im <b>Haben</b> – der Gesamtbetrag ist beidseitig immer gleich.</p>
+        <ul>
+          <li>Merksatz: <b>Soll = wohin fließt der Wert, Haben = woher kommt er.</b></li>
+          <li>Beispiel: Büromaterial bar gekauft → <code>4930 Büromaterial an 1000 Kasse</code> (SKR03).</li>
+        </ul>
+        <p><b>Die 4-Fragen-Methode</b> – so leitest du jeden Satz ab:</p>
+        <ol>
+          <li><b>Welche Konten</b> sind betroffen?</li>
+          <li><b>Welche Kontenart</b> hat jedes Konto?</li>
+          <li><b>Zunahme oder Abnahme</b> auf jedem Konto?</li>
+          <li><b>Welche Seite</b> – Soll oder Haben?</li>
+        </ol>
+      </div>
+    </details>
+
+    <details class="mod">
+      <summary><span class="mi">🧾</span> 5 · Steuer &amp; zusammengesetzte Sätze</summary>
+      <div class="body">
+        <p>Sobald Umsatz- oder Vorsteuer ins Spiel kommt, hat eine Seite <b>zwei Konten</b> – das ist ein zusammengesetzter Buchungssatz:</p>
+        <ul>
+          <li>Einkauf: <code>Büromaterial 100 € + Vorsteuer 19 € an Kasse 119 €</code></li>
+          <li>Verkauf: <code>Kasse 119 € an Erlöse 100 € + Umsatzsteuer 19 €</code> – die USt liegt im Haben, denn du schuldest sie dem Finanzamt (Passivkonto!).</li>
+          <li>In der Praxis nutzen Programme <b>Automatikkonten</b> (<code>8400/4400</code>), die die Steuer selbst umbuchen – der Modus „Mit Steuer" trainiert bewusst die ausführliche Variante.</li>
+        </ul>
+        <p>Steuersätze: <b>19 %</b> Regelsatz · <b>7 %</b> ermäßigt (Bücher, Lebensmittel) · steuerfrei: Miete, Gehälter, Versicherungen.</p>
+      </div>
+    </details>
+
+    <details class="mod">
+      <summary><span class="mi">⚠️</span> 6 · Typische Fallen</summary>
+      <div class="body">
+        <div class="trap">
+          <b>Nummern-Kollision:</b> <code>1200</code> ist im SKR03 die <b>Bank</b>, im SKR04 die <b>Forderungen</b>. Und <code>1600</code> ist im SKR03 eine <b>Verbindlichkeit</b>, im SKR04 die <b>Kasse</b>.
         </div>
+        <ul>
+          <li><b>Privatentnahmen sind kein Aufwand</b> – sie mindern das Eigenkapital, nicht den Gewinn.</li>
+          <li><b>Rechnung stellen ≠ Geld bekommen:</b> Erst <code>Forderungen an Erlöse</code>, beim Zahlungseingang dann <code>Bank an Forderungen</code>.</li>
+          <li><b>Darlehen aufnehmen ist kein Erlös</b> – <code>Bank an Darlehen</code>, steuerneutral.</li>
+          <li><b>Abschreibungen:</b> Es fließt kein Geld – <code>4830 Abschreibungen an 0210 Maschinen</code> (SKR03).</li>
+        </ul>
       </div>
-      <p>Dasselbe Konto hat je nach Rahmen eine andere Nummer – z. B. Bank: <code>1200</code> im SKR03, <code>1800</code> im SKR04. Wer bei einer Kanzlei ist, übernimmt deren Rahmen. Einmal gewählt, bleibt man dabei – ein Wechsel ist aufwändig.</p>
+    </details>
 
-      <h3>Die vier Kontenarten</h3>
-      <ul>
-        <li><b>Aktivkonten</b>: Kasse, Bank, Forderungen, Maschinen – zeigen, was du <i>hast</i>. Zunahme im <b>Soll</b>, Abnahme im <b>Haben</b>.</li>
-        <li><b>Passivkonten</b>: Verbindlichkeiten, Darlehen, Eigenkapital, USt-Schuld – zeigen, <i>wem es gehört</i>. Zunahme im <b>Haben</b>, Abnahme im <b>Soll</b>.</li>
-        <li><b>Aufwandskonten</b>: Miete, Büromaterial, Löhne – Geld, das <i>rausgeht</i>. Werden im <b>Soll</b> bebucht.</li>
-        <li><b>Ertragskonten</b>: Erlöse – Geld, das <i>reinkommt</i>. Werden im <b>Haben</b> bebucht.</li>
-      </ul>
+  </div>
 
-      <h3>Die 4-Fragen-Methode</h3>
-      <p>So leitest du aus jedem Geschäftsvorfall systematisch den Buchungssatz ab – genau diese Schritte zeigt dir der Trainer nach jeder Antwort:</p>
-      <ol>
-        <li><b>Welche Konten</b> sind betroffen? (mindestens zwei)</li>
-        <li><b>Welche Kontenart</b> hat jedes Konto? (Aktiv / Passiv / Aufwand / Ertrag)</li>
-        <li><b>Zunahme oder Abnahme</b> auf jedem Konto?</li>
-        <li><b>Welche Seite</b> – Soll oder Haben? (aus Art + Bewegung ableiten)</li>
-      </ol>
+  <h2 class="sec">Quiz starten</h2>
+  <div class="tiles">
+    <button class="tile" data-mode="konto">
+      <div class="ti">🔢</div>
+      <div class="tt">Konto finden</div>
+      <div class="td">Welche Nummer hat „Büromaterial"? Pauke die 22 wichtigsten Konten – nur Nummern, keine Namen.</div>
+      <div class="tm">10 Fragen pro Runde · SKR03 oder SKR04</div>
+    </button>
+    <button class="tile" data-mode="satz">
+      <div class="ti">✍️</div>
+      <div class="tt">Buchungssatz</div>
+      <div class="td">14 Geschäftsfälle: Bilde den Satz Soll an Haben – mit 4-Schritte-Lösungsweg nach jeder Antwort.</div>
+      <div class="tm">10 Fragen pro Runde · mit Schwer-Modus</div>
+    </button>
+    <button class="tile" data-mode="comp">
+      <div class="ti">🧾</div>
+      <div class="tt">Mit Steuer</div>
+      <div class="td">Zusammengesetzte Sätze mit Vorsteuer &amp; Umsatzsteuer auf eigenen Konten – der Prüfungsklassiker.</div>
+      <div class="tm">8 Fälle · bis zu 2 Konten pro Seite</div>
+    </button>
+    <button class="tile" data-mode="map">
+      <div class="ti">🔁</div>
+      <div class="tt">SKR03 ⇄ SKR04</div>
+      <div class="td">Umschlüsseln zwischen beiden Rahmen – inkl. der berühmten 1200/1600-Falle.</div>
+      <div class="tm">10 Fragen pro Runde · beide Richtungen</div>
+    </button>
+  </div>
 
-      <h3>Soll an Haben – das Grundprinzip</h3>
-      <p>Die <b>doppelte Buchführung</b> bucht jeden Vorgang mindestens zweimal: im <b>Soll</b> und im <b>Haben</b>. Der Gesamtbetrag ist auf beiden Seiten immer gleich – dadurch bleibt die Bilanz ausgeglichen.</p>
-      <ul>
-        <li>Merksatz: <b>Soll = wohin fließt der Wert, Haben = woher kommt er.</b></li>
-        <li>Kommt Geld aufs Konto: <code>Bank an …</code> · Geht Geld: <code>… an Bank</code></li>
-        <li>Beispiel: Kauf von Büromaterial bar → <code>4930 Büromaterial an 1000 Kasse</code> (SKR03).</li>
-      </ul>
-
-      <h3>Zusammengesetzte Buchungssätze (mit Steuer)</h3>
-      <p>Sobald Umsatz- oder Vorsteuer ins Spiel kommt, hat eine Seite <b>zwei Konten</b> – das nennt man zusammengesetzten Buchungssatz:</p>
-      <ul>
-        <li>Einkauf: <code>Büromaterial 100 € + Vorsteuer 19 € an Kasse 119 €</code> – Aufwand netto + Steuer im Soll.</li>
-        <li>Verkauf: <code>Kasse 119 € an Erlöse 100 € + Umsatzsteuer 19 €</code> – die Steuer liegt im Haben, denn du schuldest sie dem Finanzamt (Passivkonto!).</li>
-        <li>In der Praxis nutzen Programme <b>Automatikkonten</b> (z. B. <code>8400/4400</code>), die die Steuer selbst umbuchen – im Modus „Mit Steuer" lernst du bewusst die ausführliche Variante, weil sie das Verständnis schult.</li>
-        <li>Steuersätze: <b>19 %</b> Regelsatz, <b>7 %</b> ermäßigt (Bücher, Lebensmittel), manches ist steuerfrei (Miete, Gehälter, Versicherungen).</li>
-      </ul>
-
-      <h3>Typische Fallen</h3>
-      <div class="trap">
-        <b>⚠️ Nummern-Kollision:</b> <code>1200</code> ist im SKR03 die <b>Bank</b>, im SKR04 die <b>Forderungen</b>. Und <code>1600</code> ist im SKR03 eine <b>Verbindlichkeit</b>, im SKR04 die <b>Kasse</b>. Wer zwischen Rahmen umschlüsselt, vertauscht hier am häufigsten.
-      </div>
-      <ul>
-        <li><b>Privatentnahmen sind kein Aufwand</b> – sie mindern nicht den Gewinn, sondern das Eigenkapital.</li>
-        <li><b>Rechnung stellen ≠ Geld bekommen:</b> Erst <code>Forderungen an Erlöse</code>, beim Zahlungseingang dann <code>Bank an Forderungen</code>.</li>
-        <li><b>Darlehen aufnehmen ist kein Erlös</b> – Bank an Darlehen, steuerneutral.</li>
-        <li><b>Abschreibungen</b> fließt kein Geld: Aufwandskonto an Anlagekonto (z. B. <code>4830 an 0210</code> im SKR03).</li>
-      </ul>
-
-      <h3>So lernst du mit diesem Trainer</h3>
-      <div class="path">
-        <div class="step"><p><b>Konto finden:</b> Erst die Nummern pauken – SKR03 und SKR04 getrennt, bis du ~80 % sicher hast.</p></div>
-        <div class="step"><p><b>Buchungssatz:</b> Die 14 Geschäftsfälle mit Automatik-Logik. Lies den 4-Schritte-Lösungsweg unter jeder Antwort.</p></div>
-        <div class="step"><p><b>Mit Steuer:</b> Zusammengesetzte Sätze mit expliziter Vorsteuer/USt – der Prüfungsklassiker.</p></div>
-        <div class="step"><p><b>SKR03 ⇄ SKR04:</b> Zum Schluss das Umschlüsseln – wichtig, wenn Software und Kanzlei verschiedene Rahmen nutzen.</p></div>
-      </div>
-
-    </div>
+  <details class="cheat">
+    <summary>Spickzettel: die 22 wichtigsten Konten</summary>
+    <table id="cheat">
+      <thead><tr><th>Konto</th><th>SKR03</th><th>SKR04</th><th>Kontenart</th></tr></thead>
+      <tbody></tbody>
+    </table>
   </details>
+</div>
 
+<!-- ============ QUIZ-ANSICHT ============ -->
+<div class="wrap" id="quiz" style="display:none">
   <div class="bar">
-    <span class="label">Modus</span>
-    <div class="seg" id="modeSeg">
-      <button data-mode="konto" class="on">Konto finden</button>
-      <button data-mode="satz">Buchungssatz</button>
-      <button data-mode="comp">Mit Steuer</button>
-      <button data-mode="map">SKR03 ⇄ SKR04</button>
-    </div>
+    <button class="back" id="backBtn">← Übersicht</button>
     <span class="label" id="fwLabel">Rahmen</span>
     <div class="seg" id="fwSeg">
       <button data-fw="s03" class="on">SKR03</button>
@@ -236,15 +294,8 @@
   </div>
 
   <div class="card" id="card"></div>
-
-  <details>
-    <summary>Spickzettel: die 22 wichtigsten Konten</summary>
-    <table id="cheat">
-      <thead><tr><th>Konto</th><th>SKR03</th><th>SKR04</th><th>Kontenart</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </details>
 </div>
+
 <p class="footnote">Inoffizielles Lernprojekt – nicht von der DATEV eG. Kontenrahmen SKR03/SKR04 sind Standardwerke der DATEV.</p>
 
 <script>
@@ -398,7 +449,7 @@ function showResult() {
   if (pct >= 90) grade = "🏆 Prüfungsreif!";
   else if (pct >= 70) grade = "💪 Stark – fast sicher.";
   else if (pct >= 50) grade = "🌱 Solide Basis – weiterdrillen.";
-  else grade = "🔁 Erst die Einführung lesen, dann neue Runde.";
+  else grade = "🔁 Erst die Module lesen, dann neue Runde.";
   card.innerHTML = `
     <div class="result">
       <div class="qmeta">Runde beendet</div>
@@ -408,9 +459,13 @@ function showResult() {
       ${mistakes.length ? `<div class="mistakes"><h4>Deine Fehler – hier lohnt sich Wiederholung:</h4>
         ${mistakes.map(m => `<div class="m"><div class="mq">${m.frage}</div><div class="ma">→ ${m.loesung}</div></div>`).join("")}
       </div>` : `<p class="rdim" style="margin-top:14px">Fehlerfrei! 🎉</p>`}
-      <div class="actions" style="justify-content:center"><button class="btn" id="again">Neue Runde (10 Fragen)</button></div>
+      <div class="actions" style="justify-content:center">
+        <button class="btn" id="again">Neue Runde (10 Fragen)</button>
+        <button class="btn ghost" id="homeBtn">Zur Übersicht</button>
+      </div>
     </div>`;
   $("again").onclick = () => { startRound(); renderCurrent(); };
+  $("homeBtn").onclick = showHome;
 }
 
 function startRound() { round = 0; roundOk = 0; mistakes = []; }
@@ -602,35 +657,42 @@ function qMap() {
   $("next").onclick = proceed;
 }
 
-/* ---------- Steuerung ---------- */
+/* ---------- Ansichten ---------- */
 function renderCurrent() {
   if (mode === "konto") qKonto();
   else if (mode === "satz") qSatz();
   else if (mode === "comp") qComp();
   else qMap();
 }
-function render() {
+function showQuiz(m) {
+  mode = m;
+  $("home").style.display = "none";
+  $("quiz").style.display = "";
   $("fwSeg").style.display = mode === "map" ? "none" : "";
   $("fwLabel").style.display = mode === "map" ? "none" : "";
   startRound();
   renderCurrent();
+  window.scrollTo(0, 0);
 }
-$("modeSeg").querySelectorAll("button").forEach(b => b.onclick = () => {
-  mode = b.dataset.mode;
-  $("modeSeg").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
-  render();
-});
+function showHome() {
+  $("quiz").style.display = "none";
+  $("home").style.display = "";
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll(".tile").forEach(t => t.onclick = () => showQuiz(t.dataset.mode));
+$("backBtn").onclick = showHome;
+$("brandHome").onclick = showHome;
+
 $("fwSeg").querySelectorAll("button").forEach(b => b.onclick = () => {
   fw = b.dataset.fw;
   $("fwSeg").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
-  render();
+  startRound();
+  renderCurrent();
 });
 
 /* Spickzettel */
 $("cheat").querySelector("tbody").innerHTML = KONTEN.map(k =>
   `<tr><td>${k.name}</td><td class="nr">${k.s03}</td><td class="nr">${k.s04}</td><td class="art">${TYPL[k.typ]}</td></tr>`).join("");
-
-render();
 </script>
 </body>
 </html>
