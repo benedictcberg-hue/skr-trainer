@@ -57,6 +57,7 @@
   .tile .tt{font-weight:800;font-size:1rem;margin-bottom:4px}
   .tile .td{font-size:.82rem;color:var(--dim)}
   .tile .tm{margin-top:10px;font-family:var(--mono);font-size:.72rem;color:var(--petrol);font-weight:700}
+  .tile.wide{grid-column:1/-1;border-left:5px solid var(--accent);background:linear-gradient(135deg,#fff,rgba(144,208,51,.10))}
   /* ---------- Quiz-Ansicht ---------- */
   .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:6px 0 14px}
   .seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
@@ -113,6 +114,29 @@
   .mistakes .m{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:.85rem}
   .mistakes .m .mq{color:var(--dim)}
   .mistakes .m .ma{font-family:var(--mono);color:var(--petrol);margin-top:3px}
+  /* ---------- Case-Study-Belege ---------- */
+  .doc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px;font-size:.85rem;box-shadow:0 2px 8px rgba(29,29,27,.06);position:relative}
+  .stamp{position:absolute;top:14px;right:14px;border:2px dashed var(--petrol);color:var(--petrol);border-radius:8px;padding:3px 8px;font-family:var(--mono);font-size:.65rem;font-weight:700;transform:rotate(6deg);letter-spacing:.06em}
+  .doc .dh{display:flex;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+  .doc .dsender{font-weight:800;color:var(--petrol);font-size:.95rem}
+  .doc .daddr{color:var(--dim);font-size:.78rem}
+  .doc .dmeta{text-align:right;font-size:.8rem;color:var(--dim)}
+  .doc .dmeta b{color:var(--txt)}
+  .doc .dto{font-size:.82rem;margin-bottom:10px;color:var(--dim)}
+  table.inv{width:100%;border-collapse:collapse;margin:10px 0;font-size:.83rem}
+  table.inv th{text-align:left;color:var(--dim);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--line);padding:4px 6px}
+  table.inv td{padding:6px;border-bottom:1px solid var(--line)}
+  table.inv .r{text-align:right;font-family:var(--mono)}
+  table.inv tr.tot td{border-bottom:none;border-top:2px solid var(--petrol);font-weight:800}
+  table.inv tr.hlrow td{background:rgba(144,208,51,.22)}
+  table.inv tr.hlrow td:first-child{border-left:3px solid var(--accent-d)}
+  .doc .terms{font-size:.75rem;color:var(--dim);margin-top:8px}
+  .neg{color:var(--err)}
+  .pos{color:var(--ok)}
+  .receipt{max-width:340px;margin:0 auto 16px;font-family:var(--mono);border-style:dashed;border-width:2px}
+  .receipt .rc{text-align:center}
+  .receipt .rline{display:flex;justify-content:space-between;margin:3px 0}
+  .receipt hr{border:none;border-top:1px dashed var(--dim);margin:8px 0}
   details.cheat{margin-top:26px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
   details.cheat > summary{cursor:pointer;padding:14px 18px;font-weight:700;font-size:.95rem;list-style:none}
   details.cheat > summary::before{content:"\25B8 ";color:var(--accent-d)}
@@ -136,7 +160,7 @@
 
 <!-- ============ STARTSEITE ============ -->
 <div class="wrap" id="home">
-  <p class="sub">Lerne die DATEV-Kontenrahmen in sechs Modulen – und teste dich danach in vier Quiz-Modi.</p>
+  <p class="sub">Lerne die DATEV-Kontenrahmen in sechs Modulen – teste dich in vier Quiz-Modi – und kontiere am Ende einen kompletten Monat.</p>
 
   <h2 class="sec">Lernmodule</h2>
   <div class="mods">
@@ -264,6 +288,12 @@
       <div class="td">Umschlüsseln zwischen beiden Rahmen – inkl. der berühmten 1200/1600-Falle.</div>
       <div class="tm">10 Fragen pro Runde · beide Richtungen</div>
     </button>
+    <button class="tile wide" data-mode="case">
+      <div class="ti">📁</div>
+      <div class="tt">Case Study: Ein Monat bei „Nordlicht Digital"</div>
+      <div class="td">Die letzte Stufe – wie im Arbeitsalltag: 9 echte Belege kontieren. Ausgangsrechnung, Eingangsrechnung, Tankbeleg, Kontoauszug Zeile für Zeile, Gehaltsabrechnung.</div>
+      <div class="tm">9 Belege · feste Reihenfolge · mit Story</div>
+    </button>
   </div>
 
   <details class="cheat">
@@ -296,7 +326,7 @@
   <div class="card" id="card"></div>
 </div>
 
-<p class="footnote">Inoffizielles Lernprojekt – nicht von der DATEV eG. Kontenrahmen SKR03/SKR04 sind Standardwerke der DATEV.</p>
+<p class="footnote">Inoffizielles Lernprojekt – nicht von der DATEV eG. Kontenrahmen SKR03/SKR04 sind Standardwerke der DATEV. Alle Firmen, Personen und Belege in der Case Study sind frei erfunden.</p>
 
 <script>
 const KONTEN = [
@@ -404,6 +434,73 @@ const COMPOUND = [
    why:"Ermäßigter Satz → eigene Konten für Erlös und USt (7 %). Forderung brutto im Soll."},
 ];
 
+/* ---------- Case Study: April 2026 bei „Nordlicht Digital" ---------- */
+const STMT = {bank:"Musterbank Berlin", iban:"DE12 3456 7890 1234 5678 00", rows:[
+  ["01.04.","Dauerauftrag · Büro Torstraße – Miete April","−800,00"],
+  ["10.04.","Gutschrift · Müller GmbH, Rg. 2026-014","+2.380,00"],
+  ["12.04.","Lastschrift · Telekom Deutschland","−59,50"],
+  ["15.04.","Überweisung · Berg, Benedikt (privat) – Einlage","+5.000,00"]]};
+
+const CASE = [
+  {kind:"out", title:"Ausgangsrechnung 2026-014",
+   d:{sender:"Nordlicht Digital · Benedikt Berg", addr:"Torstraße 101, 10119 Berlin", to:"Müller GmbH · Werkstraße 4 · 10115 Berlin", no:"2026-014", date:"03.04.2026",
+      pos:[["Webdesign Relaunch (Paketpreis)","2.000,00 €"]], net:"2.000,00 €", ust:"380,00 €", gross:"2.380,00 €",
+      terms:"Zahlbar innerhalb von 14 Tagen ohne Abzug auf Konto DE12 3456 7890 1234 5678 00."},
+   q:"Du hast die Rechnung gerade verschickt. Wie lautet der Buchungssatz?",
+   soll:["Forderungen aus L&L"], haben:["Erlöse 19 % USt","Umsatzsteuer 19 %"],
+   amt:{"Forderungen aus L&L":"2.380,00 €","Erlöse 19 % USt":"2.000,00 €","Umsatzsteuer 19 %":"380,00 €"},
+   why:"Rechnung gestellt, noch nicht bezahlt: Forderung (brutto) im Soll, Erlös (netto) und USt im Haben. Die USt schuldest du dem Finanzamt – Passivkonto."},
+
+  {kind:"in", title:"Eingangsrechnung Schäfer Bürobedarf",
+   d:{sender:"Schäfer Bürobedarf GmbH", addr:"Papierweg 8 · 13509 Berlin", to:"Nordlicht Digital · Torstraße 101 · 10119 Berlin", no:"88-55102", date:"05.04.2026",
+      pos:[["Kopierpapier 10× A4","34,00 €"],["Toner schwarz","66,00 €"]], net:"100,00 €", ust:"19,00 €", gross:"119,00 €",
+      terms:"Zahlbar innerhalb von 14 Tagen ohne Abzug."},
+   q:"Die Rechnung liegt im Ordner – noch unbezahlt. Buchungssatz?",
+   soll:["Büromaterial","Vorsteuer 19 %"], haben:["Verbindlichkeiten aus L&L"],
+   amt:{"Büromaterial":"100,00 €","Vorsteuer 19 %":"19,00 €","Verbindlichkeiten aus L&L":"119,00 €"},
+   why:"Kauf auf Ziel: Aufwand (netto) + Vorsteuer im Soll, Verbindlichkeit (brutto) im Haben. Beim späteren Bezahlen: Verbindlichkeiten an Bank."},
+
+  {kind:"receipt", title:"Kassenbon Tankstelle",
+   d:{shop:"SPRINT Tankstelle", addr:"Chausseestr. 22 · 10115 Berlin", date:"07.04.2026 · 08:14 Uhr · Bon 4471",
+      items:[["Diesel 42,5 l","59,50"]], total:"59,50 €", pay:"Bar", tax:"inkl. 19 % MwSt. = 9,50 €"},
+   q:"Tankbeleg fürs Dienstauto, bar bezahlt. Buchungssatz?",
+   soll:["Reisekosten","Vorsteuer 19 %"], haben:["Kasse"],
+   amt:{"Reisekosten":"50,00 €","Vorsteuer 19 %":"9,50 €","Kasse":"59,50 €"},
+   why:"Kraftstoff fürs Dienstfahrzeug läuft über Reisekosten. Bar bezahlt → Kasse im Haben. Die Vorsteuer (9,50 €) kommt aufs eigene Konto."},
+
+  {kind:"stmt", title:"Kontoauszug April – Zeile 1", hl:0, d:STMT,
+   q:"Zeile 1: Die Büromiete wurde per Dauerauftrag abgebucht. Buchungssatz?",
+   soll:["Miete (Büroraum)"], haben:["Bank"],
+   amt:{"Miete (Büroraum)":"800,00 €","Bank":"800,00 €"},
+   why:"Miete ist i. d. R. umsatzsteuerbefreit → kein Steuerschlüssel. Aufwand im Soll, Bankabgang im Haben."},
+
+  {kind:"stmt", title:"Kontoauszug April – Zeile 2", hl:1, d:STMT,
+   q:"Zeile 2: Die Müller GmbH hat Rechnung 2026-014 bezahlt. Buchungssatz?",
+   soll:["Bank"], haben:["Forderungen aus L&L"],
+   amt:{"Bank":"2.380,00 €","Forderungen aus L&L":"2.380,00 €"},
+   why:"Zahlungseingang: Bank (Zugang) im Soll, die Forderung aus Beleg 1 wird ausgebucht (Haben)."},
+
+  {kind:"stmt", title:"Kontoauszug April – Zeile 3", hl:2, d:STMT,
+   q:"Zeile 3: Telekom-Lastschrift. Buchungssatz?",
+   soll:["Telefon & Internet","Vorsteuer 19 %"], haben:["Bank"],
+   amt:{"Telefon & Internet":"50,00 €","Vorsteuer 19 %":"9,50 €","Bank":"59,50 €"},
+   why:"Aufwand (netto) + Vorsteuer im Soll, Bankabgang (brutto) im Haben."},
+
+  {kind:"stmt", title:"Kontoauszug April – Zeile 4", hl:3, d:STMT,
+   q:"Zeile 4: Du hast privat Geld aufs Geschäftskonto überwiesen. Buchungssatz?",
+   soll:["Bank"], haben:["Privateinlagen"],
+   amt:{"Bank":"5.000,00 €","Privateinlagen":"5.000,00 €"},
+   why:"Private Einzahlung: Bank im Soll, Privateinlagen im Haben. Kein Erlös – steuerneutral!"},
+
+  {kind:"payroll", title:"Gehaltsabrechnung April",
+   d:{emp:"Lena Kowalski · Minijob", month:"April 2026", gross:"556,00 €", net:"556,00 €",
+      note:"Auszahlung per Überweisung am 30.04.2026 · Minijob, pauschal versteuert"},
+   q:"Das Gehalt wird ausgezahlt. Buchungssatz?",
+   soll:["Löhne und Gehälter"], haben:["Bank"],
+   amt:{"Löhne und Gehälter":"556,00 €","Bank":"556,00 €"},
+   why:"Personalaufwand im Soll, Bank im Haben. Gehälter sind umsatzsteuerfrei."},
+];
+
 const ROUND = 10;
 const TYPL = {aktiv:"Aktivkonto", passiv:"Passivkonto", aufwand:"Aufwandskonto", ertrag:"Ertragskonto"};
 
@@ -417,6 +514,7 @@ const rnd = a => a[Math.floor(Math.random() * a.length)];
 const shuffle = a => a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(p => p[1]);
 const kto = k => k[fw];
 const eqSet = (a, b) => a.length === b.length && a.every(x => b.includes(x));
+const curSize = () => mode === "case" ? CASE.length : ROUND;
 
 function dirText(k, seite) {
   if (k.typ === "aktiv") return seite === "soll" ? "Zunahme" : "Abnahme";
@@ -436,15 +534,16 @@ function score(win, frage, loesung) {
 }
 
 function nextBtn() {
-  return round >= ROUND ? "Runde auswerten →" : "Nächste Frage →";
+  return round >= curSize() ? "Auswerten →" : (mode === "case" ? "Nächster Beleg →" : "Nächste Frage →");
 }
 
 function proceed() {
-  if (round >= ROUND) showResult(); else renderCurrent();
+  if (round >= curSize()) showResult(); else renderCurrent();
 }
 
 function showResult() {
-  const pct = Math.round(roundOk / ROUND * 100);
+  const size = curSize();
+  const pct = Math.round(roundOk / size * 100);
   let grade;
   if (pct >= 90) grade = "🏆 Prüfungsreif!";
   else if (pct >= 70) grade = "💪 Stark – fast sicher.";
@@ -452,15 +551,15 @@ function showResult() {
   else grade = "🔁 Erst die Module lesen, dann neue Runde.";
   card.innerHTML = `
     <div class="result">
-      <div class="qmeta">Runde beendet</div>
-      <div class="big">${roundOk}/${ROUND}</div>
+      <div class="qmeta">${mode === "case" ? "Monat April abgeschlossen" : "Runde beendet"}</div>
+      <div class="big">${roundOk}/${size}</div>
       <div class="grade">${grade}</div>
-      <div class="rdim">${pct} % richtig in dieser Runde</div>
+      <div class="rdim">${pct} % richtig</div>
       ${mistakes.length ? `<div class="mistakes"><h4>Deine Fehler – hier lohnt sich Wiederholung:</h4>
         ${mistakes.map(m => `<div class="m"><div class="mq">${m.frage}</div><div class="ma">→ ${m.loesung}</div></div>`).join("")}
       </div>` : `<p class="rdim" style="margin-top:14px">Fehlerfrei! 🎉</p>`}
       <div class="actions" style="justify-content:center">
-        <button class="btn" id="again">Neue Runde (10 Fragen)</button>
+        <button class="btn" id="again">Nochmal (${size} ${mode === "case" ? "Belege" : "Fragen"})</button>
         <button class="btn ghost" id="homeBtn">Zur Übersicht</button>
       </div>
     </div>`;
@@ -474,6 +573,108 @@ function distraktoren(k, n) {
   const same = KONTEN.filter(x => x !== k && kto(x)[0] === kto(k)[0]);
   const rest = KONTEN.filter(x => x !== k && kto(x)[0] !== kto(k)[0]);
   return [...shuffle(same), ...shuffle(rest)].slice(0, n);
+}
+
+/* ---------- Beleg-Renderer ---------- */
+function docHTML(step) {
+  const d = step.d;
+  if (step.kind === "receipt") {
+    return `<div class="doc receipt">
+      <div class="rc"><b>${d.shop}</b><br>${d.addr}</div><hr>
+      <div class="rline"><span>${d.date}</span></div><hr>
+      ${d.items.map(i => `<div class="rline"><span>${i[0]}</span><span>${i[1]}</span></div>`).join("")}<hr>
+      <div class="rline"><b>SUMME</b><b>${d.total}</b></div>
+      <div class="rline"><span>${d.pay}</span><span>${d.total}</span></div><hr>
+      <div class="rc" style="font-size:.75rem">${d.tax}</div>
+    </div>`;
+  }
+  if (step.kind === "stmt") {
+    return `<div class="doc">
+      <div class="dh"><div><div class="dsender">${d.bank}</div><div class="daddr">Kontoauszug 04/2026</div></div>
+      <div class="dmeta">IBAN<br><b style="font-family:var(--mono)">${d.iban}</b></div></div>
+      <table class="inv"><tr><th>Datum</th><th>Buchungstext</th><th class="r">Betrag €</th></tr>
+      ${d.rows.map((r, i) => `<tr class="${i === step.hl ? "hlrow" : ""}"><td style="font-family:var(--mono)">${r[0]}</td><td>${r[1]}</td><td class="r ${r[2][0] === "−" ? "neg" : "pos"}">${r[2]}</td></tr>`).join("")}
+      </table>
+      <p class="terms">Die grün markierte Zeile ist zu kontieren.</p>
+    </div>`;
+  }
+  if (step.kind === "payroll") {
+    return `<div class="doc">
+      <div class="dh"><div><div class="dsender">Nordlicht Digital</div><div class="daddr">Entgeltabrechnung · ${d.month}</div></div>
+      <div class="dmeta">Mitarbeiterin<br><b>${d.emp}</b></div></div>
+      <table class="inv">
+        <tr><td>Bruttogehalt</td><td class="r">${d.gross}</td></tr>
+        <tr><td>Abzüge (Minijob, pauschal)</td><td class="r">0,00 €</td></tr>
+        <tr class="tot"><td>Auszahlung</td><td class="r">${d.net}</td></tr>
+      </table>
+      <p class="terms">${d.note}</p>
+    </div>`;
+  }
+  return `<div class="doc">
+    <div class="stamp">ZU KONTIEREN</div>
+    <div class="dh"><div><div class="dsender">${d.sender}</div><div class="daddr">${d.addr}</div></div>
+    <div class="dmeta"><b>RECHNUNG</b><br>Nr. ${d.no}<br>${d.date}</div></div>
+    <p class="dto">An: ${d.to}</p>
+    <table class="inv">
+      <tr><th>Position</th><th class="r">Betrag</th></tr>
+      ${d.pos.map(p => `<tr><td>${p[0]}</td><td class="r">${p[1]}</td></tr>`).join("")}
+      <tr><td>Netto</td><td class="r">${d.net}</td></tr>
+      <tr><td>zzgl. 19 % USt</td><td class="r">${d.ust}</td></tr>
+      <tr class="tot"><td>Gesamt</td><td class="r">${d.gross}</td></tr>
+    </table>
+    <p class="terms">${d.terms}</p>
+  </div>`;
+}
+
+/* ---------- Modus 5: Case Study ---------- */
+function qCase() {
+  answered = false;
+  const step = CASE[round];
+  const list = [...KONTEN].sort((a, b) => kto(a).localeCompare(kto(b)));
+  const opts = list.map(k => `<option value="${k.name}">${kto(k)} · ${k.name}</option>`).join("");
+  card.innerHTML = `
+    <div class="qmeta">${fw === "s03" ? "SKR03" : "SKR04"} · Case Study: Nordlicht Digital · Beleg ${round + 1}/${CASE.length}</div>
+    <div class="qtext">${step.title}</div>
+    ${docHTML(step)}
+    <div class="qsub">${step.q}</div>
+    <div class="satzrow">
+      <div class="field"><label>Soll</label>
+        <select id="selS1"></select>
+        <select id="selS2"></select>
+      </div>
+      <div class="an">an</div>
+      <div class="field"><label>Haben</label>
+        <select id="selH1"></select>
+        <select id="selH2"></select>
+      </div>
+    </div>
+    <div class="fb" id="fb"></div>
+    <div class="actions">
+      <button class="btn" id="check">Prüfen</button>
+      <button class="btn ghost" id="next" style="display:none"></button>
+    </div>`;
+  ["selS1", "selS2", "selH1", "selH2"].forEach((i, x) => {
+    $(i).innerHTML = `<option value="">– ${x % 2 === 0 ? "Konto 1" : "Konto 2 (optional)"} –</option>` + opts;
+  });
+  $("check").onclick = () => {
+    if (answered) return;
+    const sSel = [...new Set([$("selS1").value, $("selS2").value].filter(Boolean))];
+    const hSel = [...new Set([$("selH1").value, $("selH2").value].filter(Boolean))];
+    if (!sSel.length || !hSel.length) return;
+    answered = true;
+    const win = eqSet(sSel, step.soll) && eqSet(hSel, step.haben);
+    const line = n => { const k = KONTEN.find(x => x.name === n); return `${kto(k)} ${n} ${step.amt[n]}`; };
+    const satzTxt = step.soll.map(line).join(" + ") + "  an  " + step.haben.map(line).join(" + ");
+    const fb = $("fb");
+    fb.className = "fb show " + (win ? "ok" : "err");
+    fb.innerHTML = (win ? "✅ Korrekt kontiert!" : "❌ Nicht ganz.") +
+      `<div class="satz">${satzTxt}</div>
+       <div class="why">${step.why}</div>`;
+    $("next").style.display = "";
+    $("next").textContent = nextBtn();
+    score(win, step.title, satzTxt);
+  };
+  $("next").onclick = proceed;
 }
 
 /* ---------- Modus 1: Konto finden ---------- */
@@ -662,6 +863,7 @@ function renderCurrent() {
   if (mode === "konto") qKonto();
   else if (mode === "satz") qSatz();
   else if (mode === "comp") qComp();
+  else if (mode === "case") qCase();
   else qMap();
 }
 function showQuiz(m) {
